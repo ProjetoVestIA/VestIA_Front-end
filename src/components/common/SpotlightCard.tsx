@@ -53,7 +53,7 @@ const SpotlightCard: React.FC<SpotlightCardProps> = ({
       onBlur={handleBlur}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      className={`relative rounded-3xl bg-blue-950 overflow-hidden p-8 ${className}`}
+      className={`relative bg-blue-950 overflow-hidden p-12 ${className}`}
     >
       {/* Background gradient layer (behind content) */}
       <div

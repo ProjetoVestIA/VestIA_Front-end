@@ -111,9 +111,9 @@ function Home() {
 
                     {/* Divider/Animation */}
                     <CurvedLoop
-                        marqueeText="Aprenda ✦ com ✦ Vest.IA ✦"
+                        marqueeText="Aprenda ✧ com ✧ Vest.IA ✧"
                         speed={1.5}
-                        curveAmount={-110}
+                        curveAmount={-40}
                         direction="right"
                         interactive={true}
                         className="custom-text-style font-title blue-500" />

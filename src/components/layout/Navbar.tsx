@@ -18,7 +18,7 @@ function Navbar() {
         <>
             <nav className={`fixed top-0 w-full z-50 ${scrolled ? 'bg-white/90 backdrop-blur-md shadow-lg' : 'bg-transparent'
                 }`}>
-                <div className="max-w-7xl mx-auto px-6 py-4">
+                <div className="max-w-7xl mx-auto px-6 py-4 font-title">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
                             <div className="relative">
@@ -27,7 +27,7 @@ function Navbar() {
                                     <Brain className="w-7 h-7 text-white" />
                                 </div>
                             </div>
-                            <span className="text-2xl font-bold bg-linear-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
+                            <span className="text-2xl font-semibold bg-linear-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent">
                                 VestIA
                             </span>
                         </div>
