@@ -1,9 +1,17 @@
-import { Brain } from "lucide-react"
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-
+import { AuthContext } from "@/context/AuthContext";
+import { Brain } from "lucide-react";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function Navbar() {
+    const navigate = useNavigate();
+    const { usuario, handleLogout } = useContext(AuthContext);
+
+    function logout() {
+        handleLogout();
+        alert('O usuário foi desconectado com sucesso!');
+        navigate('/');
+    }
 
     const [scrolled, setScrolled] = useState(false);
 
@@ -34,12 +42,28 @@ function Navbar() {
                         </Link>
 
                         <div className="flex items-center gap-4">
-                            <a href="/login" className="px-5 py-2.5 text-blue-600 font-medium hover:text-blue-700 transition-colors">
-                                Entrar
-                            </a>
-                            <a href="/register" className="px-6 py-2.5 bg-linear-to-r from-blue-600 to-blue-700 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-blue-500/50 transform hover:scale-105 transition-all">
-                                Criar Conta
-                            </a>
+                            {usuario.token ? (
+                                <button
+                                    onClick={logout}
+                                    className="px-5 py-2.5 text-blue-600 font-medium hover:text-blue-700 transition-colors">
+                                    Sair
+                                </button>
+                            ) : (
+                                <>
+                                    <Link
+                                        to="/login"
+                                        className="px-5 py-2.5 text-blue-600 font-medium hover:text-blue-700 transition-colors"
+                                    >
+                                        Entrar
+                                    </Link>
+                                    <Link
+                                        to="/register"
+                                        className="px-6 py-2.5 bg-linear-to-r from-blue-600 to-blue-700 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-blue-500/50 transform hover:scale-105 transition-all"
+                                    >
+                                        Criar Conta
+                                    </Link>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
