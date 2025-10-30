@@ -2,6 +2,9 @@ import { Brain } from "lucide-react"
 import SpotlightCard from "../common/SpotlightCard"
 
 function Footer() {
+
+    const data = new Date().getFullYear()
+
     return (
         <>
             <footer className="text-white shadow-xl">
@@ -16,13 +19,13 @@ function Footer() {
                             </div>
 
                             <div className="text-gray-300 text-sm flex flex-col">
-                                <p className="flex justify-center">© 2025 VestIA. Preparando o futuro dos vestibulandos.</p>
+                                <p className="flex justify-center">© {data} VestIA. Preparando o futuro dos vestibulandos.</p>
                                 <p className="flex justify-center">Projeto realizado como forma de Projeto Integrador para a Universidade Virtual do Estado de São Paulo (UNIVESP)</p>
                             </div>
 
                             <div className="flex gap-6 text-sm text-gray-300">
                                 <a href="#" className="hover:text-white transition-colors">Sobre</a>
-                                <a href="#" className="hover:text-white transition-colors">Repositório</a>
+                                <a href="https://github.com/ProjetoVestIA/VestIA_Front-end" target="_blank" className="hover:text-white transition-colors">Repositório</a>
                             </div>
                         </div>
                     </div>
