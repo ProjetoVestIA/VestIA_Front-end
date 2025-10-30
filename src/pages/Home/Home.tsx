@@ -5,7 +5,7 @@ import CurvedLoop from '@/components/common/CurvedLoop';
 function Home() {
 
     const [activeFeature, setActiveFeature] = useState(0);
-    
+
     useEffect(() => {
         const interval = setInterval(() => {
             setActiveFeature((prev) => (prev + 1) % 3);
@@ -33,7 +33,7 @@ function Home() {
 
     return (
         <div className="">
-            
+
             {/* Hero Section */}
             <section className="min-h-screen px-6 pt-24 flex items-center justify-center">
                 <div className="w-full flex flex-col">
@@ -142,7 +142,7 @@ function Home() {
                                 <div
                                     key={idx}
                                     className={`relative p-8 rounded-2xl transition-all duration-500 cursor-pointer ${isActive
-                                        ? 'bg-linear-to-br from-blue-600 to-blue-700 shadow-2xl shadow-blue-500/50 scale-105'
+                                        ? 'bg-blue-600 shadow-2xl shadow-blue-500/50 scale-102'
                                         : 'bg-gray-50 hover:bg-gray-100'
                                         }`}
                                     onMouseEnter={() => setActiveFeature(idx)}
@@ -170,8 +170,9 @@ function Home() {
 
             {/* CTA Section */}
             <section className="pt-20 px-6">
-                <div className="max-w-4xl mx-auto">
-                    <div className="relative overflow-hidden bg-linear-to-br from-blue-400 to-blue-800 rounded-3xl p-12 shadow-2xl">
+                <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+
+                    <div className="relative overflow-hidden bg-linear-to-b from-blue-600 to-blue-950 rounded-3xl p-12 flex-1">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl opacity-30"></div>
                         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-400 rounded-full blur-3xl opacity-30"></div>
 
@@ -179,15 +180,15 @@ function Home() {
                             <h2 className="text-4xl font-title font-semibold text-white">
                                 Pronto para começar sua jornada?
                             </h2>
-                            <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+                            <p className="text-xl text-blue-100 max-w-6xl mx-auto">
                                 Junte-se a outros estudantes que já estão aproveitando o poder da Inteligência Artificial para estudar melhor!
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 text-lg font-title">
-                                <button className="px-8 py-4 bg-white text-blue-600 font-[650] rounded-xl hover:bg-blue-50 hover:shadow-2xl transform hover:scale-105 transition-all">
+                                <button className="px-8 py-4  bg-blue-600 text-white font-[650] rounded-xl hover:bg-blue-500 hover:shadow-2xl transform hover:scale-105 transition-all">
                                     CRIAR CONTA
                                 </button>
-                                <button className="px-8 py-4 bg-blue-500 text-white font-[650] rounded-xl hover:bg-blue-400 hover:shadow-2xl transform hover:scale-105 transition-all">
+                                <button className="px-8 py-4 hover:shadow-2xl  bg-white text-blue-600 font-[650] rounded-xl hover:bg-blue-50  transform hover:scale-105 transition-all">
                                     JÁ TENHO CONTA
                                 </button>
                             </div>
@@ -196,7 +197,8 @@ function Home() {
                 </div>
             </section>
 
-            
+
+
         </div>
     );
 };
