@@ -175,9 +175,9 @@ function Login() {
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-600">
                             Não tem uma conta?{' '}
-                            <button className="text-blue-600 font-bold hover:text-blue-700">
+                            <a href='/register' className="text-blue-600 font-bold hover:text-blue-700">
                                 Criar conta
-                            </button>
+                            </a>
                         </p>
                     </div>
                 </div>

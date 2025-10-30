@@ -255,9 +255,9 @@ function Register() {
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-600">
                             Já tem uma conta?{' '}
-                            <button className="text-blue-600 font-bold hover:text-blue-700">
+                            <a href='/login' className="text-blue-600 font-bold hover:text-blue-700">
                                 Fazer login
-                            </button>
+                            </a>
                         </p>
                     </div>
                 </div>
