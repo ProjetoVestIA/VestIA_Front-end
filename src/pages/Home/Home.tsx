@@ -114,7 +114,7 @@ function Home() {
                         marqueeText="Aprenda ✧ com ✧ Vest.IA ✧"
                         speed={1.5}
                         curveAmount={-40}
-                        direction="right"
+                        direction="left"
                         interactive={true}
                         className="custom-text-style font-title blue-500" />
                 </div>
@@ -169,7 +169,7 @@ function Home() {
             </section>
 
             {/* CTA Section */}
-            <section className="py-20 px-6">
+            <section className="pt-20 px-6">
                 <div className="max-w-4xl mx-auto">
                     <div className="relative overflow-hidden bg-linear-to-br from-blue-400 to-blue-800 rounded-3xl p-12 shadow-2xl">
                         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl opacity-30"></div>
