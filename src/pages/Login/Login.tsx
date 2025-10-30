@@ -1,28 +1,31 @@
-import React from 'react';
-import { Mail, EyeOff, Eye, Lock } from "lucide-react";
-import { useState, type ChangeEvent } from "react";
+import React, { useContext, useEffect, useState, type ChangeEvent, type FormEvent, type KeyboardEvent } from 'react';
+import { Mail, EyeOff, Eye, Lock } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { AuthContext } from '@/context/AuthContext';
+import type UsuarioLogin from '@/models/usuarioLogin';
 
-interface FormData {
-    email: string;
-    password: string;
+interface FormErrors {
+    usuario?: string;
+    senha?: string;
 }
 
-type FormErrors = Partial<Record<keyof FormData, string>>;
-
 function Login() {
+    const navigate = useNavigate();
+    const { usuario, handleLogin } = useContext(AuthContext);
 
-
-    const [formData, setFormData] = useState<FormData>({
-        email: '',
-        password: '',
-    });
-
+    const [usuarioLogin, setUsuarioLogin] = useState<UsuarioLogin>({} as UsuarioLogin);
     const [showPassword, setShowPassword] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
 
+    useEffect(() => {
+        if (usuario.token) {
+            navigate('/home');
+        }
+    }, [usuario.token, navigate]);
+
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target as HTMLInputElement;
-        setFormData((prev) => ({
+        const { name, value } = e.target;
+        setUsuarioLogin((prev) => ({
             ...prev,
             [name]: value,
         }));
@@ -35,46 +38,39 @@ function Login() {
         }
     };
 
+    // Validação do formulário
     const validateForm = (): FormErrors => {
         const newErrors: FormErrors = {};
 
-        if (!formData.email.trim()) {
-            newErrors.email = 'E-mail é obrigatório';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'E-mail inválido';
+        if (!usuarioLogin.usuario?.trim()) {
+            newErrors.usuario = 'E-mail é obrigatório';
+        } else if (!/\S+@\S+\.\S+/.test(usuarioLogin.usuario)) {
+            newErrors.usuario = 'E-mail inválido';
         }
 
-        if (!formData.password) {
-            newErrors.password = 'Senha é obrigatória';
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'Senha deve ter no mínimo 6 caracteres';
+        if (!usuarioLogin.senha) {
+            newErrors.senha = 'Senha é obrigatória';
+        } else if (usuarioLogin.senha.length < 6) {
+            newErrors.senha = 'Senha deve ter no mínimo 6 caracteres';
         }
 
         return newErrors;
     };
 
-    const handleSubmit = () => {
-        const newErrors = validateForm();
+    const handleSubmit = (e?: FormEvent<HTMLFormElement>) => {
+        if (e) e.preventDefault();
 
+        const newErrors = validateForm();
         if (Object.keys(newErrors).length === 0) {
-            console.log('Dados do login:', {
-                email: formData.email,
-                password: formData.password,
-            });
-            alert('Login realizado com sucesso!');
-            setFormData({ email: '', password: '' });
-            setErrors({});
+            handleLogin(usuarioLogin);
         } else {
             setErrors(newErrors);
         }
     };
 
-    const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            handleSubmit();
-        }
+    const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') handleSubmit();
     };
-
 
     return (
         <>
@@ -87,13 +83,10 @@ function Login() {
                         <p className="text-gray-600">Entre com suas credenciais</p>
                     </div>
 
-                    <div className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         {/* E-mail */}
                         <div>
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-gray-900 mb-2 font-title"
-                            >
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-900 mb-2 font-title">
                                 E-mail
                             </label>
                             <div className="relative">
@@ -103,26 +96,21 @@ function Login() {
                                 <input
                                     type="email"
                                     id="email"
-                                    name="email"
-                                    value={formData.email}
+                                    name="usuario"
+                                    value={usuarioLogin.usuario || ''}
                                     onChange={handleChange}
                                     onKeyPress={handleKeyPress}
-                                    className={`block w-full pl-10 pr-3 py-3 border ${errors.email ? 'border-red-500' : 'border-gray-300'
+                                    className={`block w-full pl-10 pr-3 py-3 border ${errors.usuario ? 'border-red-500' : 'border-gray-300'
                                         } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition`}
-                                    placeholder="joao@exemplo.com"
+                                    placeholder="email@exemplo.com"
                                 />
                             </div>
-                            {errors.email && (
-                                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-                            )}
+                            {errors.usuario && <p className="mt-1 text-sm text-red-500">{errors.usuario}</p>}
                         </div>
 
                         {/* Senha */}
                         <div>
-                            <label
-                                htmlFor="password"
-                                className="block text-sm font-medium text-gray-900 mb-2 font-title"
-                            >
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-900 mb-2 font-title">
                                 Senha
                             </label>
                             <div className="relative">
@@ -132,17 +120,17 @@ function Login() {
                                 <input
                                     type={showPassword ? 'text' : 'password'}
                                     id="password"
-                                    name="password"
-                                    value={formData.password}
+                                    name="senha"
+                                    value={usuarioLogin.senha || ''}
                                     onChange={handleChange}
                                     onKeyPress={handleKeyPress}
-                                    className={`block w-full pl-10 pr-10 py-3 border ${errors.password ? 'border-red-500' : 'border-gray-300'
+                                    className={`block w-full pl-10 pr-10 py-3 border ${errors.senha ? 'border-red-500' : 'border-gray-300'
                                         } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition`}
                                     placeholder="••••••••"
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() => setShowPassword((prev) => !prev)}
                                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
                                 >
                                     {showPassword ? (
@@ -152,9 +140,7 @@ function Login() {
                                     )}
                                 </button>
                             </div>
-                            {errors.password && (
-                                <p className="mt-1 text-sm text-red-500">{errors.password}</p>
-                            )}
+                            {errors.senha && <p className="mt-1 text-sm text-red-500">{errors.senha}</p>}
                         </div>
 
                         {/* Esqueci minha senha */}
@@ -165,12 +151,12 @@ function Login() {
                         </div>
 
                         <button
-                            onClick={handleSubmit}
+                            type="submit"
                             className="w-full bg-blue-600 text-white font-title py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition transform hover:scale-[1.02] active:scale-[0.98]"
                         >
                             Entrar
                         </button>
-                    </div>
+                    </form>
 
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-600">

@@ -1,30 +1,37 @@
-import { useState, type ChangeEvent, type KeyboardEvent } from 'react';
+import { useEffect, useState, type ChangeEvent, type KeyboardEvent, type FormEvent } from 'react';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import type Usuario from '@/models/usuario';
+import { postUsuario } from '@/services/auth.service';
 
-interface FormData {
-    name: string;
-    email: string;
-    password: string;
-    confirmPassword: string;
-}
-
-type FormErrors = Partial<Record<keyof FormData, string>>;
+type FormErrors = Partial<Record<keyof Usuario, string>>;
 
 function Register() {
-    const [formData, setFormData] = useState<FormData>({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
+    const navigate = useNavigate();
+
+    const [usuario, setUsuario] = useState<Usuario>({
+        id: 0,
+        nome: '',
+        usuario: '',
+        senha: '',
+        confirmSenha: '',
+        pontos: 0,
     });
 
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [showSenha, setShowSenha] = useState(false);
+    const [showConfirmSenha, setShowConfirmSenha] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
 
+    useEffect(() => {
+        if (usuario.id !== 0) {
+            navigate('/');
+        }
+    }, [usuario.id, navigate]);
+
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target as HTMLInputElement;
-        setFormData((prev) => ({
+        const { name, value } = e.target;
+
+        setUsuario((prev) => ({
             ...prev,
             [name]: value,
         }));
@@ -40,52 +47,50 @@ function Register() {
     const validateForm = (): FormErrors => {
         const newErrors: FormErrors = {};
 
-        if (!formData.name.trim()) {
-            newErrors.name = 'Nome é obrigatório';
+        if (!usuario.nome.trim()) {
+            newErrors.nome = 'Nome é obrigatório';
         }
 
-        if (!formData.email.trim()) {
-            newErrors.email = 'E-mail é obrigatório';
-        } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-            newErrors.email = 'E-mail inválido';
+        if (!usuario.usuario.trim()) {
+            newErrors.usuario = 'E-mail é obrigatório';
+        } else if (!/\S+@\S+\.\S+/.test(usuario.usuario)) {
+            newErrors.usuario = 'E-mail inválido';
         }
 
-        if (!formData.password) {
-            newErrors.password = 'Senha é obrigatória';
-        } else if (formData.password.length < 6) {
-            newErrors.password = 'Senha deve ter no mínimo 6 caracteres';
+        if (!usuario.senha) {
+            newErrors.senha = 'Senha é obrigatória';
+        } else if (usuario.senha.length < 8) {
+            newErrors.senha = 'Senha deve ter no mínimo 8 caracteres';
         }
 
-        if (!formData.confirmPassword) {
-            newErrors.confirmPassword = 'Confirmação de senha é obrigatória';
-        } else if (formData.password !== formData.confirmPassword) {
-            newErrors.confirmPassword = 'As senhas não coincidem';
+        if (!usuario.confirmSenha) {
+            newErrors.confirmSenha = 'Confirmação de senha é obrigatória';
+        } else if (usuario.senha !== usuario.confirmSenha) {
+            newErrors.confirmSenha = 'As senhas não coincidem';
         }
 
         return newErrors;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
+        if (e) e.preventDefault();
+
         const newErrors = validateForm();
 
         if (Object.keys(newErrors).length === 0) {
-            console.log('Dados do cadastro:', {
-                name: formData.name,
-                email: formData.email,
-                password: formData.password,
-            });
-            alert('Conta criada com sucesso!');
-            setFormData({ name: '', email: '', password: '', confirmPassword: '' });
-            setErrors({});
+            try {
+                await postUsuario('/usuarios/cadastrar', usuario, setUsuario);
+                alert('Usuário cadastrado com sucesso!');
+            } catch {
+                alert('Erro ao cadastrar o usuário!');
+            }
         } else {
             setErrors(newErrors);
         }
     };
 
     const handleKeyPress = (e: KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            handleSubmit();
-        }
+        if (e.key === 'Enter') handleSubmit();
     };
 
     return (
@@ -99,13 +104,10 @@ function Register() {
                         <p className="text-gray-600">Preencha os dados para se cadastrar</p>
                     </div>
 
-                    <div className="space-y-4">
+                    <form onSubmit={handleSubmit} className="space-y-4">
                         {/* Nome */}
                         <div>
-                            <label
-                                htmlFor="name"
-                                className="block text-sm font-medium text-gray-900 mb-2 font-title"
-                            >
+                            <label htmlFor="nome" className="block text-sm font-medium text-gray-900 mb-2 font-title">
                                 Nome Completo
                             </label>
                             <div className="relative">
@@ -114,27 +116,22 @@ function Register() {
                                 </div>
                                 <input
                                     type="text"
-                                    id="name"
-                                    name="name"
-                                    value={formData.name}
+                                    id="nome"
+                                    name="nome"
+                                    value={usuario.nome}
                                     onChange={handleChange}
                                     onKeyPress={handleKeyPress}
-                                    className={`block w-full pl-10 pr-3 py-3 border ${errors.name ? 'border-red-500' : 'border-gray-300'
+                                    className={`block w-full pl-10 pr-3 py-3 border ${errors.nome ? 'border-red-500' : 'border-gray-300'
                                         } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition`}
-                                    placeholder="João Silva"
+                                    placeholder="Nome"
                                 />
                             </div>
-                            {errors.name && (
-                                <p className="mt-1 text-sm text-red-500">{errors.name}</p>
-                            )}
+                            {errors.nome && <p className="mt-1 text-sm text-red-500">{errors.nome}</p>}
                         </div>
 
                         {/* E-mail */}
                         <div>
-                            <label
-                                htmlFor="email"
-                                className="block text-sm font-medium text-gray-900 mb-2 font-title"
-                            >
+                            <label htmlFor="usuario" className="block text-sm font-medium text-gray-900 mb-2 font-title">
                                 E-mail
                             </label>
                             <div className="relative">
@@ -143,27 +140,22 @@ function Register() {
                                 </div>
                                 <input
                                     type="email"
-                                    id="email"
-                                    name="email"
-                                    value={formData.email}
+                                    id="usuario"
+                                    name="usuario"
+                                    value={usuario.usuario}
                                     onChange={handleChange}
                                     onKeyPress={handleKeyPress}
-                                    className={`block w-full pl-10 pr-3 py-3 border ${errors.email ? 'border-red-500' : 'border-gray-300'
+                                    className={`block w-full pl-10 pr-3 py-3 border ${errors.usuario ? 'border-red-500' : 'border-gray-300'
                                         } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition`}
-                                    placeholder="joao@exemplo.com"
+                                    placeholder="email@exemplo.com"
                                 />
                             </div>
-                            {errors.email && (
-                                <p className="mt-1 text-sm text-red-500">{errors.email}</p>
-                            )}
+                            {errors.usuario && <p className="mt-1 text-sm text-red-500">{errors.usuario}</p>}
                         </div>
 
                         {/* Senha */}
                         <div>
-                            <label
-                                htmlFor="password"
-                                className="block text-sm font-medium text-gray-900 mb-2 font-title"
-                            >
+                            <label htmlFor="senha" className="block text-sm font-medium text-gray-900 mb-2 font-title">
                                 Senha
                             </label>
                             <div className="relative">
@@ -171,39 +163,34 @@ function Register() {
                                     <Lock className="h-5 w-5 text-gray-400" />
                                 </div>
                                 <input
-                                    type={showPassword ? 'text' : 'password'}
-                                    id="password"
-                                    name="password"
-                                    value={formData.password}
+                                    type={showSenha ? 'text' : 'password'}
+                                    id="senha"
+                                    name="senha"
+                                    value={usuario.senha}
                                     onChange={handleChange}
                                     onKeyPress={handleKeyPress}
-                                    className={`block w-full pl-10 pr-10 py-3 border ${errors.password ? 'border-red-500' : 'border-gray-300'
+                                    className={`block w-full pl-10 pr-10 py-3 border ${errors.senha ? 'border-red-500' : 'border-gray-300'
                                         } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition`}
                                     placeholder="••••••••"
                                 />
                                 <button
                                     type="button"
-                                    onClick={() => setShowPassword(!showPassword)}
+                                    onClick={() => setShowSenha((prev) => !prev)}
                                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
                                 >
-                                    {showPassword ? (
+                                    {showSenha ? (
                                         <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                                     ) : (
                                         <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                                     )}
                                 </button>
                             </div>
-                            {errors.password && (
-                                <p className="mt-1 text-sm text-red-500">{errors.password}</p>
-                            )}
+                            {errors.senha && <p className="mt-1 text-sm text-red-500">{errors.senha}</p>}
                         </div>
 
                         {/* Confirmar Senha */}
                         <div>
-                            <label
-                                htmlFor="confirmPassword"
-                                className="block text-sm font-medium text-gray-900 mb-2 font-title"
-                            >
+                            <label htmlFor="confirmSenha" className="block text-sm font-medium text-gray-900 mb-2 font-title">
                                 Confirmar Senha
                             </label>
                             <div className="relative">
@@ -211,46 +198,38 @@ function Register() {
                                     <Lock className="h-5 w-5 text-gray-400" />
                                 </div>
                                 <input
-                                    type={showConfirmPassword ? 'text' : 'password'}
-                                    id="confirmPassword"
-                                    name="confirmPassword"
-                                    value={formData.confirmPassword}
+                                    type={showConfirmSenha ? 'text' : 'password'}
+                                    id="confirmSenha"
+                                    name="confirmSenha"
+                                    value={usuario.confirmSenha}
                                     onChange={handleChange}
                                     onKeyPress={handleKeyPress}
-                                    className={`block w-full pl-10 pr-10 py-3 border ${errors.confirmPassword
-                                        ? 'border-red-500'
-                                        : 'border-gray-300'
+                                    className={`block w-full pl-10 pr-10 py-3 border ${errors.confirmSenha ? 'border-red-500' : 'border-gray-300'
                                         } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition`}
                                     placeholder="••••••••"
                                 />
                                 <button
                                     type="button"
-                                    onClick={() =>
-                                        setShowConfirmPassword(!showConfirmPassword)
-                                    }
+                                    onClick={() => setShowConfirmSenha((prev) => !prev)}
                                     className="absolute inset-y-0 right-0 pr-3 flex items-center"
                                 >
-                                    {showConfirmPassword ? (
+                                    {showConfirmSenha ? (
                                         <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                                     ) : (
                                         <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
                                     )}
                                 </button>
                             </div>
-                            {errors.confirmPassword && (
-                                <p className="mt-1 text-sm text-red-500">
-                                    {errors.confirmPassword}
-                                </p>
-                            )}
+                            {errors.confirmSenha && <p className="mt-1 text-sm text-red-500">{errors.confirmSenha}</p>}
                         </div>
 
                         <button
-                            onClick={handleSubmit}
+                            type="submit"
                             className="w-full bg-blue-600 text-white font-title py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition transform hover:scale-[1.02] active:scale-[0.98]"
                         >
                             Criar Conta
                         </button>
-                    </div>
+                    </form>
 
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-600">

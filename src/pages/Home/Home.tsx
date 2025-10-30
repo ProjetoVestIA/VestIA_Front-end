@@ -141,7 +141,7 @@ function Home() {
                             return (
                                 <div
                                     key={idx}
-                                    className={`relative p-8 rounded-2xl transition-all duration-500 cursor-pointer ${isActive
+                                    className={`relative p-8 rounded-2xl transition-all duration-400 cursor-pointer ${isActive
                                         ? 'bg-blue-600 shadow-2xl shadow-blue-500/50 scale-102'
                                         : 'bg-gray-50 hover:bg-gray-100'
                                         }`}
@@ -172,9 +172,7 @@ function Home() {
             <section className="pt-20 px-6">
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
 
-                    <div className="relative overflow-hidden bg-linear-to-b from-blue-600 to-blue-950 rounded-3xl p-12 flex-1">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500 rounded-full blur-3xl opacity-30"></div>
-                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-400 rounded-full blur-3xl opacity-30"></div>
+                    <div className="relative overflow-hidden bg-linear-to-br from-blue-600 to-blue-950 rounded-3xl p-12 flex-1">
 
                         <div className="relative text-center space-y-6">
                             <h2 className="text-4xl font-title font-semibold text-white">
