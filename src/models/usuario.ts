@@ -3,6 +3,5 @@ export default interface Usuario {
     nome: string;
     usuario: string;
     senha: string;
-    confirmSenha: string;
     pontos: number;
 }

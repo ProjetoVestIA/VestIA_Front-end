@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import type Usuario from '@/models/usuario';
 import { postUsuario } from '@/services/auth.service';
 
-type FormErrors = Partial<Record<keyof Usuario, string>>;
+type FormErrors = Partial<Record<keyof Usuario | 'confirmSenha', string>>;
 
 function Register() {
     const navigate = useNavigate();
@@ -14,11 +14,11 @@ function Register() {
         nome: '',
         usuario: '',
         senha: '',
-        confirmSenha: '',
         pontos: 0,
     });
 
     const [showSenha, setShowSenha] = useState(false);
+    const [confirmSenha, setConfirmSenha] = useState('');
     const [showConfirmSenha, setShowConfirmSenha] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
 
@@ -31,10 +31,14 @@ function Register() {
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
-        setUsuario((prev) => ({
-            ...prev,
-            [name]: value,
-        }));
+        if (name === 'confirmSenha') {
+            setConfirmSenha(value);
+        } else {
+            setUsuario((prev) => ({
+                ...prev,
+                [name]: value,
+            }));
+        }
 
         if (errors[name as keyof FormErrors]) {
             setErrors((prev) => ({
@@ -63,14 +67,15 @@ function Register() {
             newErrors.senha = 'Senha deve ter no mínimo 8 caracteres';
         }
 
-        if (!usuario.confirmSenha) {
+        if (!confirmSenha) {
             newErrors.confirmSenha = 'Confirmação de senha é obrigatória';
-        } else if (usuario.senha !== usuario.confirmSenha) {
+        } else if (usuario.senha !== confirmSenha) {
             newErrors.confirmSenha = 'As senhas não coincidem';
         }
 
         return newErrors;
     };
+
 
     const handleSubmit = async (e?: FormEvent<HTMLFormElement>) => {
         if (e) e.preventDefault();
@@ -201,7 +206,6 @@ function Register() {
                                     type={showConfirmSenha ? 'text' : 'password'}
                                     id="confirmSenha"
                                     name="confirmSenha"
-                                    value={usuario.confirmSenha}
                                     onChange={handleChange}
                                     onKeyPress={handleKeyPress}
                                     className={`block w-full pl-10 pr-10 py-3 border ${errors.confirmSenha ? 'border-red-500' : 'border-gray-300'

@@ -42,12 +42,21 @@ function Navbar() {
                         </Link>
 
                         <div className="flex items-center gap-4">
+
                             {usuario.token ? (
-                                <button
-                                    onClick={logout}
-                                    className="px-5 py-2.5 text-blue-600 font-medium hover:text-blue-700 transition-colors">
-                                    Sair
-                                </button>
+                                <>
+                                    <Link
+                                        to="/perfil"
+                                        className="px-6 py-2.5 bg-linear-to-r from-blue-600 to-blue-700 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-blue-500/50 transform hover:scale-105 transition-all"
+                                    >
+                                        Perfil
+                                    </Link>
+                                    <button
+                                        onClick={logout}
+                                        className="px-5 py-2.5 text-blue-600 font-medium hover:text-blue-700 transition-colors">
+                                        Sair
+                                    </button>
+                                </>
                             ) : (
                                 <>
                                     <Link
