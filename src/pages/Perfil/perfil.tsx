@@ -35,7 +35,7 @@ function Perfil() {
     };
 
     return (
-        <div className="bg-linear-to-br from-blue-10 to-blue-100 min-h-screen flex items-center justify-center p-6">
+        <div className="bg-linear-to-br flex items-center justify-center">
             <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl p-8">
                 {/* Header */}
                 <div className="text-center mb-8">
