@@ -6,6 +6,7 @@ import Register from "./pages/Register/Register"
 import Login from "./pages/Login/Login"
 import { AuthProvider } from "./context/AuthContext"
 import Perfil from "./pages/Perfil/perfil"
+import Quiz from "./pages/Quiz/quiz"
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/perfil" element={<Perfil />} />
+                <Route path="/quiz" element={<Quiz />} />
               </Routes>
             </main>
 
