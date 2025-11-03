@@ -38,7 +38,6 @@ function Login() {
         }
     };
 
-    // Validação do formulário
     const validateForm = (): FormErrors => {
         const newErrors: FormErrors = {};
 

@@ -1,12 +1,13 @@
-/* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from 'react';
 import { Target, BookOpen, Zap, ChevronRight, Sparkles, Clock, X, Library, Calculator, Languages, Beaker, Landmark, Infinity, Flame, Dumbbell } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-function quizForm() {
+function QuizForm() {
 
     const [selectedSubject, setSelectedSubject] = useState<string>('all');
     const [questionsCount, setQuestionsCount] = useState<number | 'unlimited'>(10);
     const [languages, setLanguages] = useState<string[]>(['none']);
+    const navigate = useNavigate();
 
     const subjects = [
         { id: 'all', name: 'Todas as Matérias', IconComponent: Library, color: 'blue' },
@@ -16,7 +17,7 @@ function quizForm() {
         { id: 'human', name: 'Ciências Humanas e suas Tecnologias', IconComponent: Landmark, color: 'orange' },
     ];
 
-    const questionOptions: Array<{ value: number | 'unlimited'; label: string; time: string; IconComponent: any; recommended?: boolean }> = [
+    const questionOptions = [
         { value: 5, label: '5 questões', time: '~10 min', IconComponent: Zap },
         { value: 10, label: '10 questões', time: '~20 min', IconComponent: Target, recommended: true },
         { value: 20, label: '20 questões', time: '~40 min', IconComponent: Flame },
@@ -31,11 +32,13 @@ function quizForm() {
     ];
 
     const handleStart = () => {
-        console.log('Iniciando com:', {
+        const filters = {
             subject: selectedSubject,
-            count: questionsCount,
-            languages
-        });
+            questionsCount: questionsCount,
+            languages: languages
+        };
+
+        navigate('/quiz', { state: { filters } });
     };
 
     const toggleLanguage = (value: string) => {
@@ -62,7 +65,6 @@ function quizForm() {
         };
         return colors[color] || colors.blue;
     };
-
 
     return (
         <>
@@ -249,4 +251,4 @@ function quizForm() {
     )
 }
 
-export default quizForm
+export default QuizForm

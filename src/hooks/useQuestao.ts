@@ -39,23 +39,6 @@ export const useQuestao = (maxCaracteres?: number): UseQuestaoReturn => {
     useEffect(() => {
         const carregarTotalQuestoes = async () => {
             try {
-                const response = await buscar('/questao/all', (data: Questao[]) => {
-                    setTotalQuestoes(data.length);
-                }, {
-                    headers: { Authorization: usuarioLogado.token }
-                });
-            } catch (error) {
-                console.error('Erro ao carregar total de questões:', error);
-                setTotalQuestoes(100);
-            }
-        };
-
-        carregarTotalQuestoes();
-    }, [usuarioLogado.token]);
-
-    useEffect(() => {
-        const carregarTotalQuestoes = async () => {
-            try {
                 await buscar('/questao/all', (data: Questao[]) => {
                     if (maxCaracteres) {
                         const idsFiltrados = data

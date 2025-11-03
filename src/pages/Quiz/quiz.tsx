@@ -1,9 +1,15 @@
 import { Brain, CheckCircle2, XCircle, Lightbulb, ChevronRight, Sparkles, BookOpen, Target, Flame } from 'lucide-react';
-import { useQuestao } from '@/hooks/useQuestao';
+import { useQuiz } from '@/hooks/useQuiz';
 import { AuthContext } from '@/context/AuthContext';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function Quiz() {
+    const location = useLocation();
+    const navigate = useNavigate();
+    const filters = location.state?.filters;
+    const [hasInitialized, setHasInitialized] = useState(false);
+
     const {
         questao,
         alternativas,
@@ -13,27 +19,102 @@ function Quiz() {
         aiHelpType,
         totalQuestoes,
         isLoading,
+        currentQuestionIndex,
+        stats,
         handleSelectOption,
         handleSubmit,
         handleNext,
         handleAIHelp,
-    } = useQuestao();
+        carregarQuestoesComFiltros,
+    } = useQuiz();
 
     const { usuario: usuarioLogado } = useContext(AuthContext);
 
-    if (!questao || !(usuarioLogado.token)) {
-        return <p className="text-center text-gray-500 mt-10">Nenhuma questão disponível.</p>;
+    useEffect(() => {
+        if (filters && !hasInitialized && usuarioLogado.token) {
+            carregarQuestoesComFiltros(filters);
+            setHasInitialized(true);
+        }
+
+        if (!filters && !hasInitialized) {
+            navigate('/quizform');
+        }
+    }, [filters, hasInitialized, carregarQuestoesComFiltros, navigate, usuarioLogado.token]);
+
+    const getTotalQuestoesDisplay = () => {
+        if (!filters?.questionsCount || filters.questionsCount === 'unlimited') {
+            return totalQuestoes; 
+        }
+        return Math.min(filters.questionsCount, totalQuestoes);
+    };
+
+    const totalQuestoesDisplay = getTotalQuestoesDisplay();
+
+    if (!filters) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p className="text-gray-500">Redirecionando...</p>
+            </div>
+        );
     }
 
-    if (isLoading) {
-        return <p className="text-center text-gray-500 mt-10">Carregando questão...</p>;
+    if (isLoading && !questao) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p className="text-gray-500">Carregando questões...</p>
+            </div>
+        );
+    }
+
+    if (!questao && !isLoading && hasInitialized) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center max-w-md">
+                    <Brain className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                        Nenhuma questão encontrada
+                    </h3>
+                    <p className="text-gray-500 mb-6">
+                        Não foram encontradas questões com os filtros selecionados. Tente alterar as configurações.
+                    </p>
+                    <button
+                        onClick={() => navigate('/quizform')}
+                        className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                    >
+                        Voltar ao Formulário
+                    </button>
+                </div>
+            </div>
+        );
+    }
+
+    if (!usuarioLogado.token) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <div className="text-center">
+                    <p className="text-gray-500 mb-4">Você precisa estar logado para acessar o quiz.</p>
+                    <button
+                        onClick={() => navigate('/login')}
+                        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                        Fazer Login
+                    </button>
+                </div>
+            </div>
+        );
     }
 
     if (!questao) {
-        return <p className="text-center text-gray-500 mt-10">Nenhuma questão disponível.</p>;
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <p className="text-gray-500">Carregando questão...</p>
+            </div>
+        );
     }
 
     const isCorrect = selectedOption === questao.resposta;
+    const currentQuestionNumber = currentQuestionIndex + 1;
+    const progressPercentage = totalQuestoesDisplay > 0 ? (currentQuestionNumber / totalQuestoesDisplay) * 100 : 0;
 
     const getOptionStyle = (letra: string) => {
         if (!isAnswered) {
@@ -55,19 +136,23 @@ function Quiz() {
 
     return (
         <>
-            {/* Header */}
-            <header className="sticky top-0 z-40">
+            <header className="sticky top-0 z-40 bg-white border-b">
                 <div className="max-w-6xl mx-auto px-6">
-                    <div className="flex gap-2 items-center justify-between font-title">
+                    <div className="flex gap-2 items-center justify-between font-title py-3">
                         <div className="grow">
-                            <div className="max-w-6xl mx-auto py-3">
-                                <div className="flex items-center gap-4">
-                                    <span className=" font-medium text-gray-900">Questão 5 de 20</span>
-                                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
-                                        <div className="h-full bg-linear-to-r from-blue-600 to-blue-500 rounded-full" style={{ width: '25%' }}></div>
-                                    </div>
-                                    <span className="font-medium text-blue-600">25%</span>
+                            <div className="flex items-center gap-4">
+                                <span className="font-medium text-gray-900">
+                                    Questão {currentQuestionNumber} de {totalQuestoes}
+                                </span>
+                                <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-linear-to-r from-blue-600 to-blue-500 rounded-full transition-all duration-300"
+                                        style={{ width: `${progressPercentage}%` }}
+                                    ></div>
                                 </div>
+                                <span className="font-medium text-blue-600">
+                                    {Math.round(progressPercentage)}%
+                                </span>
                             </div>
                         </div>
 
@@ -81,7 +166,7 @@ function Quiz() {
                 </div>
             </header>
 
-            <div className="max-w-6xl mx-auto px-6 py-2">
+            <div className="max-w-6xl mx-auto px-6 py-8">
                 <div className="grid lg:grid-cols-3 gap-6">
                     {/* Main Content */}
                     <div className="lg:col-span-2 space-y-6">
@@ -272,21 +357,26 @@ function Quiz() {
                             <div className="space-y-3">
                                 <div className="flex items-center justify-between p-3 bg-white/10 backdrop-blur rounded-lg">
                                     <span className="text-sm">Questões respondidas</span>
-                                    <span className="font-title text-xl">15</span>
+                                    <span className="font-title text-xl">{stats.questionsAnswered}</span>
                                 </div>
                                 <div className="flex items-center justify-between p-3 bg-white/10 backdrop-blur rounded-lg">
                                     <span className="text-sm">Taxa de acerto</span>
-                                    <span className="font-title text-xl">73%</span>
+                                    <span className="font-title text-xl">{Math.round(stats.accuracy)}%</span>
                                 </div>
                                 <div className="flex items-center justify-between p-3 bg-white/10 backdrop-blur rounded-lg">
                                     <span className="text-sm">Sequência atual</span>
                                     <span className="font-title text-xl flex gap-1.5 items-center">
                                         <Flame className='h-5 w-5' />
-                                        5
+                                        {stats.currentStreak}
                                     </span>
+                                </div>
+                                <div className="flex items-center justify-between p-3 bg-white/10 backdrop-blur rounded-lg">
+                                    <span className="text-sm">Melhor sequência</span>
+                                    <span className="font-title text-xl">{stats.bestStreak}</span>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
             </div>
