@@ -1,6 +1,6 @@
 import { useEffect, useState, type ChangeEvent, type KeyboardEvent, type FormEvent } from 'react';
-import { Eye, EyeOff, Mail, Lock, User, Link } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import type Usuario from '@/models/usuario';
 import { postUsuario } from '@/services/auth.service';
 
@@ -100,7 +100,7 @@ function Register() {
 
     return (
         <>
-            <div className="flex flex-col grow pt-18 bg-linear-to-br from-blue-50 via-white to-blue-50 items-center justify-center">
+            <div className="flex flex-col grow bg-linear-to-br from-blue-50 via-white to-blue-50 items-center justify-center">
                 <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
                     <div className="text-center mb-4">
                         <h1 className="text-3xl font-bold text-blue-600 mb-2 font-title">

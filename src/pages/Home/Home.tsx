@@ -39,7 +39,7 @@ function Home() {
         <div className="">
 
             {/* Hero Section */}
-            <section className="min-h-screen px-6 pt-24 flex items-center justify-center">
+            <section className="min-h-screen px-6 flex items-center justify-center">
                 <div className="w-full flex flex-col">
                     <div className="max-w-7xl  mx-auto grid lg:grid-cols-2 gap-12 items-center">
                         <div className="space-y-6">
@@ -194,10 +194,23 @@ function Home() {
                                     <h2 className="text-4xl font-title font-semibold text-white">
                                         Pronto para começar sua jornada?
                                     </h2>
-                                    <p className="text-xl text-blue-100 max-w-6xl mx-auto">
+                                    <p className="text-xl text-blue-100 max-w-2xl mx-auto">
                                         Junte-se a outros estudantes que já estão aproveitando o poder da Inteligência Artificial para estudar melhor!
                                     </p>
-
+                                    <div className="flex flex-wrap justify-center gap-4 pt-2">
+                                        <div className="flex items-center gap-2 text-blue-100">
+                                            <BookOpen className="w-5 h-5" />
+                                            <span className="text-sm">Estude com IA</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-blue-100">
+                                            <Target className="w-5 h-5" />
+                                            <span className="text-sm">Alcance suas metas</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-blue-100">
+                                            <ChartNoAxesCombined className="w-5 h-5" />
+                                            <span className="text-sm">Resultados reais</span>
+                                        </div>
+                                    </div>
                                     <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 text-lg font-title">
                                         <Link to='/register' className="px-8 py-4  bg-blue-600 text-white font-[650] rounded-xl hover:bg-blue-500 hover:shadow-2xl transform hover:scale-105 transition-all">
                                             CRIAR CONTA

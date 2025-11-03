@@ -74,7 +74,7 @@ function Login() {
 
     return (
         <>
-            <div className="flex flex-col grow items-center pt-18 bg-linear-to-br from-blue-50 via-white to-blue-50">
+            <div className="flex flex-col grow items-center bg-linear-to-br from-blue-50 via-white to-blue-50">
                 <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
                     <div className="text-center mb-4">
                         <h1 className="text-3xl font-bold text-blue-600 mb-2 font-title">

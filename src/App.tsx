@@ -16,7 +16,7 @@ function App() {
           <div className="flex flex-col min-h-screen bg-linear-to-br from-blue-50 via-white to-blue-50">
             <Navbar />
 
-            <main className="grow">
+            <main className="grow pt-24">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/*" element={<Home />} />
