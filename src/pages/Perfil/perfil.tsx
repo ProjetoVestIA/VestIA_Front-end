@@ -2,6 +2,7 @@ import type Usuario from "@/models/usuario";
 import { User, Award, Mail, Save, X, Edit2, LockKeyhole } from "lucide-react";
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "@/context/AuthContext";
+import { atualizar } from "@/services/auth.service";
 
 function Perfil() {
     const { usuario: usuarioLogado } = useContext(AuthContext);
@@ -22,11 +23,33 @@ function Perfil() {
         setIsEditing(true);
     };
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if (!usuario) return;
-        setUsuario({ ...usuario, nome: editedData.nome, usuario: editedData.usuario, senha: usuarioLogado.senha });
-        setIsEditing(false);
-        alert('Perfil atualizado com sucesso!');
+
+        try {
+            const dadosAtualizados = {
+                ...usuario,
+                nome: editedData.nome,
+                usuario: editedData.usuario,
+                senha: editedData.senha,
+            };
+
+            const header = {
+                headers: {
+                    Authorization: usuarioLogado.token
+                },
+            };
+
+            await atualizar(`/usuarios/atualizar`, dadosAtualizados, setUsuario, header);
+
+            localStorage.setItem('usuario', JSON.stringify(dadosAtualizados));
+
+            setIsEditing(false);
+            alert('Perfil atualizado com sucesso!');
+        } catch (error) {
+            console.error('Erro ao atualizar perfil:', error);
+            alert('Erro ao atualizar perfil!');
+        }
     };
 
     const handleCancel = () => {
@@ -139,7 +162,6 @@ function Perfil() {
                             </div>
                         )}
                     </div>
-
                 </div>
 
                 {/* Botões de Ação */}
