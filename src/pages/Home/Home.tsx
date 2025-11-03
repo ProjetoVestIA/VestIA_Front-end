@@ -13,12 +13,8 @@ function Home() {
         isAnswered,
         showAIHelp,
         aiHelpType,
-        totalQuestoes,
-        isLoading,
         handleSelectOption,
         handleSubmit,
-        handleNext,
-        handleAIHelp,
     } = useQuestao(650);
 
     const { usuario } = useContext(AuthContext);
@@ -109,7 +105,7 @@ function Home() {
                                     </>
                                 ) : (
                                     <>
-                                        <Link to='/quiz' className="group px-8 py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
+                                        <Link to='/quizform' className="group px-8 py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
                                             <Zap className="w-5 h-5" />
                                             Começar a praticar
                                         </Link>
@@ -351,13 +347,12 @@ function Home() {
                                         </div>
                                     </div>
                                     <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
-                                        <a
-                                            href='/quiz'
+                                        <Link to='/quizform'
                                             className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-600 font-title font-[650] text-lg rounded-xl hover:bg-blue-50 hover:shadow-2xl transform hover:scale-105 transition-all"
                                         >
                                             COMEÇAR A PRATICAR
                                             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>

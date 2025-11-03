@@ -10,8 +10,8 @@ function quizForm() {
 
     const subjects = [
         { id: 'all', name: 'Todas as Matérias', IconComponent: Library, color: 'blue' },
-        { id: 'mat', name: 'Matemática e suas Tecnologias', IconComponent: Calculator, color: 'purple' },
         { id: 'ling', name: 'Linguagens, Códigos e suas Tecnologias', IconComponent: BookOpen, color: 'red' },
+        { id: 'mat', name: 'Matemática e suas Tecnologias', IconComponent: Calculator, color: 'purple' },
         { id: 'nat', name: 'Ciências da Natureza e suas Tecnologias', IconComponent: Beaker, color: 'green' },
         { id: 'human', name: 'Ciências Humanas e suas Tecnologias', IconComponent: Landmark, color: 'orange' },
     ];
@@ -163,38 +163,40 @@ function quizForm() {
                     </div>
 
                     {/* Linguagens */}
-                    <div className="bg-white rounded-2xl shadow-lg p-8">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="p-2 bg-green-100 rounded-lg">
-                                <Languages className="w-6 h-6 text-green-600" />
+                    {(selectedSubject === 'all' || selectedSubject === 'ling') && (
+                        <div className="bg-white rounded-2xl shadow-lg p-8">
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="p-2 bg-green-100 rounded-lg">
+                                    <Languages className="w-6 h-6 text-green-600" />
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl font-bold text-gray-900">Língua Estrangeira</h2>
+                                    <p className="text-sm text-gray-600">Selecione uma opção de língua estrangeira</p>
+                                </div>
                             </div>
-                            <div>
-                                <h2 className="text-2xl font-bold text-gray-900">Língua Estrangeira</h2>
-                                <p className="text-sm text-gray-600">Selecione uma opção de língua estrangeira</p>
-                            </div>
-                        </div>
 
-                        <div className="flex flex-wrap gap-3">
-                            {languageOptions.map((language) => {
-                                const isSelected = languages.includes(language.value);
-                                return (
-                                    <button
-                                        key={language.value}
-                                        onClick={() => toggleLanguage(language.value)}
-                                        className={`px-6 py-3 rounded-xl border-2 font-semibold transition-all duration-300 ${isSelected
-                                            ? 'bg-green-600 text-white border-green-600 shadow-lg'
-                                            : 'bg-white text-gray-700 border-gray-300 hover:border-green-400 hover:bg-green-50'
-                                            }`}
-                                    >
-                                        {language.label}
-                                        {isSelected && language.value !== 'none' && (
-                                            <X className="w-4 h-4 inline-block ml-2" />
-                                        )}
-                                    </button>
-                                );
-                            })}
+                            <div className="flex flex-wrap gap-3">
+                                {languageOptions.map((language) => {
+                                    const isSelected = languages.includes(language.value);
+                                    return (
+                                        <button
+                                            key={language.value}
+                                            onClick={() => toggleLanguage(language.value)}
+                                            className={`px-6 py-3 rounded-xl border-2 font-semibold transition-all duration-300 ${isSelected
+                                                ? 'bg-green-600 text-white border-green-600 shadow-lg'
+                                                : 'bg-white text-gray-700 border-gray-300 hover:border-green-400 hover:bg-green-50'
+                                                }`}
+                                        >
+                                            {language.label}
+                                            {isSelected && language.value !== 'none' && (
+                                                <X className="w-4 h-4 inline-block ml-2" />
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Resumo e Botão Iniciar */}
                     <div className="bg-linear-to-br from-blue-600 to-blue-700 rounded-2xl shadow-2xl p-8 text-white">
@@ -214,15 +216,20 @@ function quizForm() {
                                             {subjects.find(s => s.id === selectedSubject)?.name || 'Todas as matérias'}
                                         </span>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <Languages className="w-5 h-5" />
-                                        <span>
-                                            {languages.includes('none')
-                                                ? 'Nenhuma Língua Estrangeira'
-                                                : languages.map(v => languageOptions.find(vo => vo.value === v)?.label).join(', ')
-                                            }
-                                        </span>
-                                    </div>
+
+                                    {(selectedSubject === 'all' || selectedSubject === 'ling') && (
+                                        <div className="flex items-center gap-2">
+                                            <Languages className="w-5 h-5" />
+                                            <span>
+                                                {languages.includes('none')
+                                                    ? 'Nenhuma Língua Estrangeira'
+                                                    : languages
+                                                        .map(v => languageOptions.find(vo => vo.value === v)?.label)
+                                                        .join(', ')
+                                                }
+                                            </span>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
 
