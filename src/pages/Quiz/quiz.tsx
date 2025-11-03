@@ -1,59 +1,39 @@
-import { useState } from 'react';
 import { Brain, CheckCircle2, XCircle, Lightbulb, ChevronRight, Sparkles, BookOpen, Target, Flame } from 'lucide-react';
-
+import { useQuestao } from '@/hooks/useQuestao';
+import { AuthContext } from '@/context/AuthContext';
+import { useContext } from 'react';
 
 function Quiz() {
+    const {
+        questao,
+        alternativas,
+        selectedOption,
+        isAnswered,
+        showAIHelp,
+        aiHelpType,
+        totalQuestoes,
+        isLoading,
+        handleSelectOption,
+        handleSubmit,
+        handleNext,
+        handleAIHelp,
+    } = useQuestao();
 
-    const [selectedOption, setSelectedOption] = useState<string | null>(null);
-    const [isAnswered, setIsAnswered] = useState(false);
-    const [showAIHelp, setShowAIHelp] = useState(false);
-    const [aiHelpType, setAIHelpType] = useState<'concept' | 'error' | null>(null);
+    const { usuario: usuarioLogado } = useContext(AuthContext);
 
-    // Dados simulados da questão
-    const questao = {
-        id: 1,
-        vestibular: 'ENEM',
-        ano: 2023,
-        disciplina: 'Matemática',
-        assunto: 'Geometria Espacial',
-        dificuldade: 'Média',
-        enunciado: 'Um reservatório de água tem formato de um cilindro circular reto. Sua base tem raio de 3 metros e sua altura é de 5 metros. Considerando π = 3,14, qual é a capacidade total desse reservatório em metros cúbicos?',
-        alternativas: [
-            { letra: 'A', texto: '47,1 m³' },
-            { letra: 'B', texto: '94,2 m³' },
-            { letra: 'C', texto: '141,3 m³' },
-            { letra: 'D', texto: '188,4 m³' },
-            { letra: 'E', texto: '235,5 m³' }
-        ],
-        gabarito: 'C',
-        explicacao: 'Para calcular o volume de um cilindro, usamos a fórmula V = π × r² × h. Substituindo os valores: V = 3,14 × 3² × 5 = 3,14 × 9 × 5 = 141,3 m³.'
-    };
+    if (!questao || !(usuarioLogado.token)) {
+        return <p className="text-center text-gray-500 mt-10">Nenhuma questão disponível.</p>;
+    }
 
-    const handleSelectOption = (letra: string) => {
-        if (!isAnswered) {
-            setSelectedOption(letra);
-        }
-    };
+    if (isLoading) {
+        return <p className="text-center text-gray-500 mt-10">Carregando questão...</p>;
+    }
 
-    const handleSubmit = () => {
-        if (selectedOption) {
-            setIsAnswered(true);
-        }
-    };
+    if (!questao) {
+        return <p className="text-center text-gray-500 mt-10">Nenhuma questão disponível.</p>;
+    }
 
-    const handleNext = () => {
-        setSelectedOption(null);
-        setIsAnswered(false);
-        setShowAIHelp(false);
-        setAIHelpType(null);
-    };
-
-    const handleAIHelp = (type: 'concept' | 'error') => {
-        setAIHelpType(type);
-        setShowAIHelp(true);
-    };
-
-    const isCorrect = selectedOption === questao.gabarito;
+    const isCorrect = selectedOption === questao.resposta;
 
     const getOptionStyle = (letra: string) => {
         if (!isAnswered) {
@@ -62,11 +42,11 @@ function Quiz() {
                 : 'border-gray-200 bg-white hover:border-blue-400 hover:bg-blue-50';
         }
 
-        if (letra === questao.gabarito) {
+        if (letra === questao.resposta) {
             return 'border-green-500 bg-green-50 shadow-lg';
         }
 
-        if (selectedOption === letra && letra !== questao.gabarito) {
+        if (selectedOption === letra && letra !== questao.resposta) {
             return 'border-red-500 bg-red-50 shadow-lg';
         }
 
@@ -94,7 +74,7 @@ function Quiz() {
                         <div className="flex items-center gap-4">
                             <div className="flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-lg">
                                 <Target className="w-4 h-4 text-blue-600" />
-                                <span className="text-sm text-blue-700">1.240 pts</span>
+                                <span className="text-sm text-blue-700">{usuarioLogado.pontos} pts</span>
                             </div>
                         </div>
                     </div>
@@ -107,7 +87,7 @@ function Quiz() {
                     <div className="lg:col-span-2 space-y-6">
                         <div className="bg-white rounded-2xl shadow-lg p-6">
                             <span className="px-3 py-1.5 flex mb-4 bg-blue-100 text-blue-700 text-sm justify-center font-semibold rounded-full font-title">
-                                {questao.vestibular}
+                                {questao.assunto}
                             </span>
 
                             {/* Enunciado */}
@@ -124,7 +104,7 @@ function Quiz() {
                                 Escolha a alternativa correta:
                             </h3>
                             <div className="space-y-3">
-                                {questao.alternativas.map((alt) => (
+                                {alternativas.map((alt) => (
                                     <button
                                         key={alt.letra}
                                         onClick={() => handleSelectOption(alt.letra)}
@@ -133,9 +113,9 @@ function Quiz() {
                                             }`}
                                     >
                                         <div className="flex items-start gap-4">
-                                            <div className={`shrink-0 w-10 h-10 font-title rounded-lg flex items-center justify-center font-bold text-lg transition-colors ${isAnswered && alt.letra === questao.gabarito
+                                            <div className={`shrink-0 w-10 h-10 font-title rounded-lg flex items-center justify-center font-bold text-lg transition-colors ${isAnswered && alt.letra === questao.resposta
                                                 ? 'bg-green-500 text-white'
-                                                : isAnswered && selectedOption === alt.letra && alt.letra !== questao.gabarito
+                                                : isAnswered && selectedOption === alt.letra && alt.letra !== questao.resposta
                                                     ? 'bg-red-500 text-white'
                                                     : selectedOption === alt.letra
                                                         ? 'bg-blue-600 text-white'
@@ -145,10 +125,10 @@ function Quiz() {
                                             </div>
                                             <div className="flex-1 flex items-center justify-between ">
                                                 <span className="text-gray-800 font-medium">{alt.texto}</span>
-                                                {isAnswered && alt.letra === questao.gabarito && (
+                                                {isAnswered && alt.letra === questao.resposta && (
                                                     <CheckCircle2 className="w-6 h-6 text-green-500 shrink-0" />
                                                 )}
-                                                {isAnswered && selectedOption === alt.letra && alt.letra !== questao.gabarito && (
+                                                {isAnswered && selectedOption === alt.letra && alt.letra !== questao.resposta && (
                                                     <XCircle className="w-6 h-6 text-red-500 shrink-0" />
                                                 )}
                                             </div>
@@ -176,21 +156,14 @@ function Quiz() {
                                     )}
                                     <div className="flex-1">
                                         <h3 className={`text-2xl font-semibold font-title mb-2 ${isCorrect ? 'text-green-800' : 'text-red-800'}`}>
-                                            {isCorrect ? '🎉 Parabéns! Resposta correta!' : '😔 Resposta incorreta'}
+                                            {isCorrect ? 'Parabéns! Resposta correta!' : 'Resposta incorreta'}
                                         </h3>
-                                        <p className={`text-lg mb-4 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                                        <p className={`text-lg ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
                                             {isCorrect
-                                                ? 'Você ganhou +50 pontos! Continue assim!'
-                                                : `A resposta correta era a alternativa ${questao.gabarito}.`
+                                                ? 'Você ganhou +5 pontos! Continue assim!'
+                                                : `A resposta correta era a alternativa ${questao.resposta}.`
                                             }
                                         </p>
-                                        <div className="bg-white/80 backdrop-blur rounded-xl p-4">
-                                            <div className="flex items-center gap-2 mb-2">
-                                                <Lightbulb className="w-5 h-5 text-blue-600" />
-                                                <span className="font-semibold text-gray-900">Explicação:</span>
-                                            </div>
-                                            <p className="text-gray-700 leading-relaxed">{questao.explicacao}</p>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
