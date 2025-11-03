@@ -24,7 +24,7 @@ export interface UseQuestaoReturn {
     carregarQuestaoAleatoria: () => void;
 }
 
-export const useQuestao = (): UseQuestaoReturn => {
+export const useQuestao = (maxCaracteres?: number): UseQuestaoReturn => {
     const [questao, setQuestao] = useState<Questao | null>(null);
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [isAnswered, setIsAnswered] = useState(false);
@@ -32,10 +32,10 @@ export const useQuestao = (): UseQuestaoReturn => {
     const [aiHelpType, setAIHelpType] = useState<'concept' | 'error' | null>(null);
     const [totalQuestoes, setTotalQuestoes] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [questoesFiltradas, setQuestoesFiltradas] = useState<number[]>([]);
 
     const { usuario: usuarioLogado } = useContext(AuthContext);
 
-    // Busca o total de questões disponíveis
     useEffect(() => {
         const carregarTotalQuestoes = async () => {
             try {
@@ -46,26 +46,54 @@ export const useQuestao = (): UseQuestaoReturn => {
                 });
             } catch (error) {
                 console.error('Erro ao carregar total de questões:', error);
-                setTotalQuestoes(10); // Valor padrão caso falhe
+                setTotalQuestoes(100);
             }
         };
 
         carregarTotalQuestoes();
     }, [usuarioLogado.token]);
 
-    // Gera ID aleatório baseado no total de questões
+    useEffect(() => {
+        const carregarTotalQuestoes = async () => {
+            try {
+                await buscar('/questao/all', (data: Questao[]) => {
+                    if (maxCaracteres) {
+                        const idsFiltrados = data
+                            .filter(q => q.enunciado && q.enunciado.length <= maxCaracteres)
+                            .map(q => q.id);
+                        setQuestoesFiltradas(idsFiltrados);
+                        setTotalQuestoes(idsFiltrados.length);
+                    } else {
+                        setTotalQuestoes(data.length);
+                    }
+                }, {
+                    headers: { Authorization: usuarioLogado.token }
+                });
+            } catch (error) {
+                console.error('Erro ao carregar total de questões:', error);
+                setTotalQuestoes(10);
+            }
+        };
+
+        carregarTotalQuestoes();
+    }, [usuarioLogado.token, maxCaracteres]);
+
     const gerarIdAleatorio = () => {
+        if (maxCaracteres && questoesFiltradas.length > 0) {
+            const indice = Math.floor(Math.random() * questoesFiltradas.length);
+            return questoesFiltradas[indice];
+        }
+
         if (totalQuestoes > 0) {
             return Math.floor(Math.random() * totalQuestoes) + 1;
         }
-        return Math.floor(Math.random() * 10) + 1; // Fallback
+        return Math.floor(Math.random() * 100) + 1;
     };
 
-    // Carrega questão aleatória
     const carregarQuestaoAleatoria = async () => {
         setIsLoading(true);
         const id = gerarIdAleatorio();
-        
+
         try {
             await buscar(`/questao/${id}`, setQuestao, {
                 headers: { Authorization: usuarioLogado.token }
@@ -77,14 +105,12 @@ export const useQuestao = (): UseQuestaoReturn => {
         }
     };
 
-    // Carrega a primeira questão
     useEffect(() => {
         if (totalQuestoes > 0) {
             carregarQuestaoAleatoria();
         }
     }, [totalQuestoes]);
 
-    // Formata alternativas
     const alternativas: Alternativa[] = questao
         ? [
             { letra: 'A', texto: questao.alternativaA },

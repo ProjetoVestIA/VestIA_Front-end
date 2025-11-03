@@ -1,10 +1,25 @@
 import { useContext, useEffect, useState } from 'react';
-import { Brain, Trophy, Zap, ChevronRight, Sparkles, FileQuestionMark, ArrowRight, BookOpen, Target, ChartNoAxesCombined } from 'lucide-react';
+import { Brain, Trophy, Zap, ChevronRight, Sparkles, FileQuestionMark, ArrowRight, BookOpen, Target, ChartNoAxesCombined, CheckCircle2, XCircle } from 'lucide-react';
 import CurvedLoop from '@/components/common/CurvedLoop';
 import { AuthContext } from '@/context/AuthContext';
 import { Link } from 'react-router-dom';
+import { useQuestao } from '@/hooks/useQuestao';
 
 function Home() {
+    const {
+        questao,
+        alternativas,
+        selectedOption,
+        isAnswered,
+        showAIHelp,
+        aiHelpType,
+        totalQuestoes,
+        isLoading,
+        handleSelectOption,
+        handleSubmit,
+        handleNext,
+        handleAIHelp,
+    } = useQuestao(650);
 
     const { usuario } = useContext(AuthContext);
 
@@ -35,13 +50,33 @@ function Home() {
         }
     ];
 
+    const isCorrect = selectedOption === questao?.resposta;
+
+    const getOptionStyle = (letra: string) => {
+        if (!isAnswered) {
+            return selectedOption === letra
+                ? 'border-blue-600 bg-blue-50'
+                : 'border-gray-200 hover:border-blue-500 hover:bg-blue-50';
+        }
+
+        if (letra === questao?.resposta) {
+            return 'border-green-500 bg-green-50';
+        }
+
+        if (selectedOption === letra && letra !== questao?.resposta) {
+            return 'border-red-500 bg-red-50';
+        }
+
+        return 'border-gray-200 bg-gray-50 opacity-60';
+    };
+
     return (
         <div className="">
 
             {/* Hero Section */}
             <section className="min-h-screen px-6 flex items-center justify-center">
                 <div className="w-full flex flex-col">
-                    <div className="max-w-7xl  mx-auto grid lg:grid-cols-2 gap-12 items-center">
+                    <div className="max-w-7xl mx-auto grid lg:grid-cols-2 items-center">
                         <div className="space-y-6">
                             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full text-blue-700 text-sm font-medium font-title">
                                 <Sparkles className="w-4 h-4" />
@@ -88,40 +123,103 @@ function Home() {
                         {/* Hero Board/Animation */}
                         <div className="relative">
                             <div className="absolute inset-0 bg-linear-to-br from-blue-400 to-blue-600 rounded-3xl blur-3xl opacity-20 animate-pulse"></div>
-                            <div className="relative bg-white rounded-3xl shadow-2xl p-8 space-y-6">
+                            <div className="relative bg-white rounded-2xl shadow-xl p-5 space-y-4">
                                 <div className="flex items-center justify-between">
-                                    <span className="text-sm font-medium text-gray-500 font-title">Questão do Dia</span>
-                                    <span className="px-3 py-1 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full font-title">ASSUNTO</span>
+                                    <span className="text-sm font-medium text-gray-500 font-title">Questão Rápida</span>
+                                    <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full font-title">
+                                        {questao?.assunto || 'ASSUNTO'}
+                                    </span>
                                 </div>
 
-                                <div className="space-y-4">
-                                    <div className="h-3 bg-gray-200 rounded-full w-full"></div>
-                                    <div className="h-3 bg-gray-200 rounded-full w-5/6"></div>
-                                    <div className="h-3 bg-gray-200 rounded-full w-4/6"></div>
-                                </div>
+                                <p className="text-md text-gray-800 leading-snug">{questao?.enunciado}</p>
 
-                                <div className="grid grid-cols-2 gap-3">
-                                    {['A', 'B', 'C', 'D'].map((opt) => (
+                                <div className="grid grid-cols-2 gap-2">
+                                    {alternativas.map((alt) => (
                                         <button
-                                            key={opt}
-                                            className="p-4 border-2 border-gray-200 rounded-xl hover:border-blue-500 hover:bg-blue-50 transition-all text-left"
+                                            key={alt.letra}
+                                            onClick={() => handleSelectOption(alt.letra)}
+                                            disabled={isAnswered}
+                                            className={`p-3 border-2 rounded-lg transition-all text-left text-md ${getOptionStyle(alt.letra)} ${!isAnswered ? 'cursor-pointer' : 'cursor-default'}`}
                                         >
-                                            <span className="font-semibold font-title text-gray-700">{opt}</span>
+                                            <div className="flex items-center gap-2">
+                                                <span
+                                                    className={`font-title w-5 h-5 p-2 rounded-md flex items-center justify-center text-xs ${isAnswered && alt.letra === questao?.resposta
+                                                        ? 'bg-green-500 text-white'
+                                                        : isAnswered && selectedOption === alt.letra && alt.letra !== questao?.resposta
+                                                            ? 'bg-red-500 text-white'
+                                                            : selectedOption === alt.letra
+                                                                ? 'bg-blue-600 text-white'
+                                                                : 'bg-gray-100 text-gray-700'
+                                                        }`}
+                                                >
+                                                    {alt.letra}
+                                                </span>
+                                                <span className="text-gray-700 leading-tight">{alt.texto}</span>
+                                            </div>
                                         </button>
                                     ))}
                                 </div>
 
-                                <div className="flex items-center gap-3 pt-4 border-t">
-                                    <div className="p-2 bg-blue-100 rounded-lg">
-                                        <Brain className="w-5 h-5 text-blue-600" />
+                                {!isAnswered && (
+                                    <button
+                                        onClick={handleSubmit}
+                                        disabled={!selectedOption}
+                                        className={`w-full py-2.5 rounded-lg font-semibold text-md transition-all ${selectedOption
+                                            ? 'bg-blue-600 text-white hover:bg-blue-700'
+                                            : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                            }`}
+                                    >
+                                        Confirmar Resposta
+                                    </button>
+                                )}
+
+                                {isAnswered && (
+                                    <div
+                                        className={`p-2.5 rounded-lg border-2 ${isCorrect
+                                            ? 'bg-green-50 border-green-200'
+                                            : 'bg-red-50 border-red-200'
+                                            }`}
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            {isCorrect ? (
+                                                <CheckCircle2 className="w-4 h-4 text-green-600 shrink-0" />
+                                            ) : (
+                                                <XCircle className="w-4 h-4 text-red-600 shrink-0" />
+                                            )}
+                                            <div className="text-sm leading-tight">
+                                                <span
+                                                    className={`font-semibold font-title ${isCorrect ? 'text-green-800' : 'text-red-800'}`}
+                                                >
+                                                    {isCorrect ? 'Parabéns!' : 'Incorreta'}
+                                                </span>
+                                                <span
+                                                    className={`ml-1 ${isCorrect ? 'text-green-700' : 'text-red-700'}`}
+                                                >
+                                                    {isCorrect ? 'Continue assim!' : `Resposta: ${questao?.resposta}`}
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="flex-1">
-                                        <div className="text-xs text-gray-500">IA disponível para ajudar</div>
-                                        <div className="text-sm font-medium text-gray-700 font-title">Precisa de uma explicação?</div>
+                                )}
+
+                                {showAIHelp && (
+                                    <div className="p-2.5 bg-gray-50 rounded-lg border border-gray-200 text-xs text-gray-700 leading-snug">
+                                        <div className="flex items-start gap-2">
+                                            <Brain className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                                            {aiHelpType === 'concept' ? (
+                                                <p>
+                                                    <span className="font-semibold text-gray-900">Conceito:</span> A IA explica o conceito relacionado a esta questão.
+                                                </p>
+                                            ) : (
+                                                <p>
+                                                    <span className="font-semibold text-gray-900">Análise do erro:</span> A IA mostra onde você errou e como melhorar.
+                                                </p>
+                                            )}
+                                        </div>
                                     </div>
-                                    <Sparkles className="w-5 h-5 text-blue-500 animate-pulse" />
-                                </div>
+                                )}
                             </div>
+
                         </div>
                     </div>
 
