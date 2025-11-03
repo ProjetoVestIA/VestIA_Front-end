@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Brain, Trophy, Zap, ChevronRight, Sparkles, FileQuestionMark, ArrowRight, BookOpen, Target, ChartNoAxesCombined } from 'lucide-react';
 import CurvedLoop from '@/components/common/CurvedLoop';
 import { AuthContext } from '@/context/AuthContext';
+import { Link } from 'react-router-dom';
 
 function Home() {
 
@@ -62,10 +63,10 @@ function Home() {
                             <div className="flex flex-col sm:flex-row gap-4 font-title text-md">
                                 {!usuario.token ? (
                                     <>
-                                        <a href='/register' className="group px-8 py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
+                                        <Link to='/register' className="group px-8 py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
                                             Criar Conta ou Fazer Log-In
                                             <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                        </a>
+                                        </Link>
                                         <button className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl border-2 border-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105">
                                             <Zap className="w-5 h-5" />
                                             Começar a praticar
@@ -73,10 +74,10 @@ function Home() {
                                     </>
                                 ) : (
                                     <>
-                                        <a href='/placeholder' className="group px-8 py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
+                                        <Link to='/placeholder' className="group px-8 py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
                                             <Zap className="w-5 h-5" />
                                             Começar a praticar
-                                        </a>
+                                        </Link>
 
                                     </>
                                 )}
@@ -198,12 +199,12 @@ function Home() {
                                     </p>
 
                                     <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 text-lg font-title">
-                                        <a href='/register' className="px-8 py-4  bg-blue-600 text-white font-[650] rounded-xl hover:bg-blue-500 hover:shadow-2xl transform hover:scale-105 transition-all">
+                                        <Link to='/register' className="px-8 py-4  bg-blue-600 text-white font-[650] rounded-xl hover:bg-blue-500 hover:shadow-2xl transform hover:scale-105 transition-all">
                                             CRIAR CONTA
-                                        </a>
-                                        <a href='/login' className="px-8 py-4 hover:shadow-2xl  bg-white text-blue-600 font-[650] rounded-xl hover:bg-blue-50  transform hover:scale-105 transition-all">
+                                        </Link>
+                                        <Link to='/login' className="px-8 py-4 hover:shadow-2xl  bg-white text-blue-600 font-[650] rounded-xl hover:bg-blue-50  transform hover:scale-105 transition-all">
                                             JÁ TENHO CONTA
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>

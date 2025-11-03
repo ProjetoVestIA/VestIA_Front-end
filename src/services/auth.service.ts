@@ -11,5 +11,6 @@ export const postUsuario = async (url: string, dados: Object, setDados: Function
 
 export const login = async (url: string, dados: Object, setDados: Function) => {
     const response = await api.post(url, dados)
-    setDados(response.data)
+    const usuarioData = response.data
+    setDados(usuarioData)
 }

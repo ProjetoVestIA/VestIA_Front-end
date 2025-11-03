@@ -1,5 +1,5 @@
 import { useEffect, useState, type ChangeEvent, type KeyboardEvent, type FormEvent } from 'react';
-import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, Link } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type Usuario from '@/models/usuario';
 import { postUsuario } from '@/services/auth.service';
@@ -238,9 +238,9 @@ function Register() {
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-600">
                             Já tem uma conta?{' '}
-                            <a href='/login' className="text-blue-600 font-bold hover:text-blue-700">
+                            <Link to='/login' className="text-blue-600 font-bold hover:text-blue-700">
                                 Fazer login
-                            </a>
+                            </Link>
                         </p>
                     </div>
                 </div>

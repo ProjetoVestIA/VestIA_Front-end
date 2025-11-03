@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState, type ChangeEvent, type FormEvent, type KeyboardEvent } from 'react';
 import { Mail, EyeOff, Eye, Lock } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '@/context/AuthContext';
 import type UsuarioLogin from '@/models/usuarioLogin';
 
@@ -161,9 +161,9 @@ function Login() {
                     <div className="mt-6 text-center">
                         <p className="text-sm text-gray-600">
                             Não tem uma conta?{' '}
-                            <a href='/register' className="text-blue-600 font-bold hover:text-blue-700">
+                            <Link to='/register' className="text-blue-600 font-bold hover:text-blue-700">
                                 Criar conta
-                            </a>
+                            </Link>
                         </p>
                     </div>
                 </div>
