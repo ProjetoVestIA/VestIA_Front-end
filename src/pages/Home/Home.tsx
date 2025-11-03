@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
-import { Brain, Trophy, Zap, ChevronRight, Sparkles, FileQuestionMark } from 'lucide-react';
+import { useContext, useEffect, useState } from 'react';
+import { Brain, Trophy, Zap, ChevronRight, Sparkles, FileQuestionMark, ArrowRight, BookOpen, Target, ChartNoAxesCombined } from 'lucide-react';
 import CurvedLoop from '@/components/common/CurvedLoop';
+import { AuthContext } from '@/context/AuthContext';
 
 function Home() {
+
+    const { usuario } = useContext(AuthContext);
 
     const [activeFeature, setActiveFeature] = useState(0);
 
@@ -38,7 +41,7 @@ function Home() {
             <section className="min-h-screen px-6 pt-24 flex items-center justify-center">
                 <div className="w-full flex flex-col">
                     <div className="max-w-7xl  mx-auto grid lg:grid-cols-2 gap-12 items-center">
-                        <div className="space-y-8">
+                        <div className="space-y-6">
                             <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full text-blue-700 text-sm font-medium font-title">
                                 <Sparkles className="w-4 h-4" />
                                 <span>Powered by DeepSeek</span>
@@ -57,14 +60,26 @@ function Home() {
                             </p>
 
                             <div className="flex flex-col sm:flex-row gap-4 font-title text-md">
-                                <button className="group px-8 py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
-                                    Criar Conta ou Fazer Log-In
-                                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                </button>
-                                <button className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl border-2 border-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105">
-                                    <Zap className="w-5 h-5" />
-                                    Começar a praticar
-                                </button>
+                                {!usuario.token ? (
+                                    <>
+                                        <a href='/register' className="group px-8 py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
+                                            Criar Conta ou Fazer Log-In
+                                            <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                        </a>
+                                        <button className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl border-2 border-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105">
+                                            <Zap className="w-5 h-5" />
+                                            Começar a praticar
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <a href='/placeholder' className="group px-8 py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
+                                            <Zap className="w-5 h-5" />
+                                            Começar a praticar
+                                        </a>
+
+                                    </>
+                                )}
                             </div>
 
                         </div>
@@ -171,27 +186,71 @@ function Home() {
             {/* CTA Section */}
             <section className="pt-20 px-6">
                 <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
+                    {!usuario.token ? (
+                        <>
+                            <div className="relative overflow-hidden bg-linear-to-br from-blue-600 to-blue-950 rounded-3xl p-12 flex-1">
+                                <div className="relative text-center space-y-6">
+                                    <h2 className="text-4xl font-title font-semibold text-white">
+                                        Pronto para começar sua jornada?
+                                    </h2>
+                                    <p className="text-xl text-blue-100 max-w-6xl mx-auto">
+                                        Junte-se a outros estudantes que já estão aproveitando o poder da Inteligência Artificial para estudar melhor!
+                                    </p>
 
-                    <div className="relative overflow-hidden bg-linear-to-br from-blue-600 to-blue-950 rounded-3xl p-12 flex-1">
-
-                        <div className="relative text-center space-y-6">
-                            <h2 className="text-4xl font-title font-semibold text-white">
-                                Pronto para começar sua jornada?
-                            </h2>
-                            <p className="text-xl text-blue-100 max-w-6xl mx-auto">
-                                Junte-se a outros estudantes que já estão aproveitando o poder da Inteligência Artificial para estudar melhor!
-                            </p>
-
-                            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 text-lg font-title">
-                                <button className="px-8 py-4  bg-blue-600 text-white font-[650] rounded-xl hover:bg-blue-500 hover:shadow-2xl transform hover:scale-105 transition-all">
-                                    CRIAR CONTA
-                                </button>
-                                <button className="px-8 py-4 hover:shadow-2xl  bg-white text-blue-600 font-[650] rounded-xl hover:bg-blue-50  transform hover:scale-105 transition-all">
-                                    JÁ TENHO CONTA
-                                </button>
+                                    <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4 text-lg font-title">
+                                        <a href='/register' className="px-8 py-4  bg-blue-600 text-white font-[650] rounded-xl hover:bg-blue-500 hover:shadow-2xl transform hover:scale-105 transition-all">
+                                            CRIAR CONTA
+                                        </a>
+                                        <a href='/login' className="px-8 py-4 hover:shadow-2xl  bg-white text-blue-600 font-[650] rounded-xl hover:bg-blue-50  transform hover:scale-105 transition-all">
+                                            JÁ TENHO CONTA
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
+                        </>
+                    ) : (
+                        <>
+                            <div className="relative overflow-hidden bg-linear-to-br from-blue-600 to-blue-950 rounded-3xl p-12 flex-1">
+                                <div className="relative text-center space-y-4">
+                                    <div className="text-blue-100 inline-flex items-center gap-2 bg-blue-500/30 backdrop-blur-sm px-4 py-2 rounded-full border border-blue-400/30">
+                                        <Sparkles className="w-4 h-4" />
+                                        <span className="text-md font-medium">
+                                            Bem-vindo de volta!
+                                        </span>
+                                    </div>
+                                    <h2 className="text-4xl font-title font-semibold text-white">
+                                        Continue sua jornada de aprendizado
+                                    </h2>
+                                    <p className="text-xl text-blue-100 max-w-2xl mx-auto">
+                                        Aproveite ao máximo a IA para turbinar seus estudos. Pratique agora e alcance seus objetivos!
+                                    </p>
+                                    <div className="flex flex-wrap justify-center gap-4 pt-2">
+                                        <div className="flex items-center gap-2 text-blue-100">
+                                            <BookOpen className="w-5 h-5" />
+                                            <span className="text-sm">Estude com IA</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-blue-100">
+                                            <Target className="w-5 h-5" />
+                                            <span className="text-sm">Alcance suas metas</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 text-blue-100">
+                                            <ChartNoAxesCombined className="w-5 h-5" />
+                                            <span className="text-sm">Resultados reais</span>
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+                                        <a
+                                            href='/placeholder'
+                                            className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-blue-600 font-title font-[650] text-lg rounded-xl hover:bg-blue-50 hover:shadow-2xl transform hover:scale-105 transition-all"
+                                        >
+                                            COMEÇAR A PRATICAR
+                                            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
+                    )}
                 </div>
             </section>
 

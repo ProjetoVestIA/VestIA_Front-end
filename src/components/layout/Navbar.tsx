@@ -1,5 +1,5 @@
 import { AuthContext } from "@/context/AuthContext";
-import { Brain } from "lucide-react";
+import { Brain, CircleUserRound, LogOut } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -41,19 +41,21 @@ function Navbar() {
                             </span>
                         </Link>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-6">
 
                             {usuario.token ? (
                                 <>
                                     <Link
                                         to="/perfil"
-                                        className="px-6 py-2.5 bg-linear-to-r from-blue-600 to-blue-700 text-white font-medium rounded-xl hover:shadow-lg hover:shadow-blue-500/50 transform hover:scale-105 transition-all"
+                                        className="flex gap-2 px-5 py-2.5 text-blue-600 font-medium hover:text-blue-700 transition-colors"
                                     >
+                                        <CircleUserRound />
                                         Perfil
                                     </Link>
                                     <button
                                         onClick={logout}
-                                        className="px-5 py-2.5 text-blue-600 font-medium hover:text-blue-700 transition-colors">
+                                        className="flex gap-2 px-5 py-2.5 text-blue-600 font-medium hover:text-blue-700 transition-colors">
+                                        <LogOut />
                                         Sair
                                     </button>
                                 </>
