@@ -8,7 +8,6 @@ function quizForm() {
     const [questionsCount, setQuestionsCount] = useState<number | 'unlimited'>(10);
     const [languages, setLanguages] = useState<string[]>(['none']);
 
-    // Dados simulados de assuntos
     const subjects = [
         { id: 'all', name: 'Todas as Matérias', IconComponent: Library, color: 'blue' },
         { id: 'mat', name: 'Matemática e suas Tecnologias', IconComponent: Calculator, color: 'purple' },
@@ -37,21 +36,17 @@ function quizForm() {
             count: questionsCount,
             languages
         });
-        // Navegar para página de questões
     };
 
     const toggleLanguage = (value: string) => {
         if (value === 'none') {
             setLanguages(['none']);
         } else {
-            // Remove 'none' se estiver selecionado e adiciona a nova língua
             const filtered = languages.filter(v => v !== 'none');
             if (filtered.includes(value)) {
-                // Remove a língua se já estiver selecionada
                 const newLanguages = filtered.filter(v => v !== value);
                 setLanguages(newLanguages.length > 0 ? newLanguages : ['none']);
             } else {
-                // Adiciona a nova língua
                 setLanguages([...filtered, value]);
             }
         }
