@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Brain, Trophy, Zap, ChevronRight, Sparkles, FileQuestionMark, ArrowRight, BookOpen, Target, ChartNoAxesCombined, CheckCircle2, XCircle, TrendingUp } from 'lucide-react';
+import { Brain, Trophy, Zap, ChevronRight, Sparkles, FileQuestionMark, ArrowRight, BookOpen, Target, ChartNoAxesCombined, CheckCircle2, XCircle } from 'lucide-react';
 import CurvedLoop from '@/components/common/CurvedLoop';
 import { AuthContext } from '@/context/AuthContext';
 import { Link } from 'react-router-dom';
@@ -180,7 +180,7 @@ function Home() {
                                             )}
                                             <div className="text-xs sm:text-sm leading-tight">
                                                 <span
-                                                    className={`font-semibold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}
+                                                    className={`font-semibold font-title ${isCorrect ? 'text-green-800' : 'text-red-800'}`}
                                                 >
                                                     {isCorrect ? 'Parabéns!' : 'Incorreta'}
                                                 </span>

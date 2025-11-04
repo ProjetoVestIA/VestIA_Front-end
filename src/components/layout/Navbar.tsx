@@ -55,7 +55,7 @@ function Navbar() {
                                     </Link>
                                     <button
                                         onClick={logout}
-                                        className="flex gap-2 px-5 py-2.5 text-blue-600 font-medium hover:text-blue-700 transition-colors">
+                                        className="flex gap-2 px-5 py-2.5 text-red-700 font-medium hover:text-red-800 transition-colors">
                                         <LogOut />
                                         Sair
                                     </button>
