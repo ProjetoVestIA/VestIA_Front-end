@@ -104,10 +104,10 @@ function Home() {
                                         </Link>
                                     </>
                                 ) : (
-                                    <button className="group px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
+                                    <Link to="/quizform" className="group px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
                                         <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
                                         Começar a praticar
-                                    </button>
+                                    </Link>
                                 )}
                             </div>
                         </div>
