@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Brain, Trophy, Zap, ChevronRight, Sparkles, FileQuestionMark, ArrowRight, BookOpen, Target, ChartNoAxesCombined, CheckCircle2, XCircle } from 'lucide-react';
+import { Brain, Trophy, Zap, ChevronRight, Sparkles, FileQuestionMark, ArrowRight, BookOpen, Target, ChartNoAxesCombined, CheckCircle2, XCircle, TrendingUp } from 'lucide-react';
 import CurvedLoop from '@/components/common/CurvedLoop';
 import { AuthContext } from '@/context/AuthContext';
 import { Link } from 'react-router-dom';
@@ -67,15 +67,14 @@ function Home() {
     };
 
     return (
-        <div className="">
-
+        <>
             {/* Hero Section */}
-            <section className="min-h-screen px-6 flex items-center justify-center">
+            <section className="min-h-screen px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-0 flex items-center justify-center">
                 <div className="w-full flex flex-col">
-                    <div className="max-w-7xl mx-auto grid lg:grid-cols-2 items-center">
-                        <div className="space-y-6">
-                            <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 rounded-full text-blue-700 text-sm font-medium font-title">
-                                <Sparkles className="w-4 h-4" />
+                    <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+                        <div className="space-y-4 sm:space-y-6 text-center lg:text-left">
+                            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-blue-100 rounded-full text-blue-700 text-xs sm:text-sm font-medium font-title">
+                                <Sparkles className="w-3 h-3 sm:w-4 sm:h-4" />
                                 <span>Powered by DeepSeek</span>
                             </div>
 
@@ -87,59 +86,56 @@ function Home() {
                                 <span className="text-gray-900"> de forma mais inteligente!</span>
                             </h1>
 
-                            <p className="text-xl text-gray-600 leading-relaxed">
+                            <p className="text-base sm:text-lg lg:text-xl text-gray-600 leading-relaxed max-w-xl mx-auto lg:mx-0">
                                 Estude com questões reais de vestibulares, receba feedback personalizado de nossa IA e acompanhe seu progresso.
                             </p>
 
-                            <div className="flex flex-col sm:flex-row gap-4 font-title text-md">
+                            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 text-sm sm:text-base pt-2 font-title">
                                 {!usuario.token ? (
                                     <>
-                                        <Link to='/register' className="group px-8 py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
+                                        <button className="group px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
                                             Criar Conta
-                                            <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                                        </Link>
-                                        <Link to='/login' className="px-8 py-4 bg-white text-blue-600 font-semibold rounded-xl border-2 border-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105">
-                                            <Zap className="w-5 h-5" />
-                                            Entrar e Começar a praticar
-                                        </Link>
+                                            <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+                                        </button>
+                                        <button className="px-6 sm:px-8 py-3 sm:py-4 bg-white text-blue-600 font-semibold rounded-xl border-2 border-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105">
+                                            <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
+                                            <span className="hidden sm:inline">Entrar e Começar a praticar</span>
+                                            <span className="sm:hidden">Entrar</span>
+                                        </button>
                                     </>
                                 ) : (
-                                    <>
-                                        <Link to='/quizform' className="group px-8 py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
-                                            <Zap className="w-5 h-5" />
-                                            Começar a praticar
-                                        </Link>
-
-                                    </>
+                                    <button className="group px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
+                                        <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
+                                        Começar a praticar
+                                    </button>
                                 )}
                             </div>
-
                         </div>
 
                         {/* Hero Board/Animation */}
-                        <div className="relative">
-                            <div className="absolute inset-0 bg-linear-to-br from-blue-400 to-blue-600 rounded-3xl blur-3xl opacity-20 animate-pulse"></div>
-                            <div className="relative bg-white rounded-2xl shadow-xl p-5 space-y-4">
-                                <div className="flex items-center justify-between">
-                                    <span className="text-sm font-medium text-gray-500 font-title">Questão Rápida</span>
+                        <div className="relative mt-8 lg:mt-0">
+                            <div className="absolute inset-0 bg-linear-to-br from-blue-400 to-blue-600 rounded-2xl sm:rounded-3xl blur-3xl opacity-20 animate-pulse"></div>
+                            <div className="relative bg-white rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-5 space-y-3 sm:space-y-4">
+                                <div className="flex items-center justify-between flex-wrap gap-2">
+                                    <span className="text-xs sm:text-sm font-medium text-gray-500 font-title">Questão Rápida</span>
                                     <span className="px-2 py-0.5 bg-blue-100 text-blue-700 text-xs font-semibold rounded-full font-title">
                                         {questao?.assunto || 'ASSUNTO'}
                                     </span>
                                 </div>
 
-                                <p className="text-md text-gray-800 leading-snug">{questao?.enunciado}</p>
+                                <p className="text-sm sm:text-base text-gray-800 leading-snug">{questao?.enunciado}</p>
 
-                                <div className="grid grid-cols-2 gap-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                     {alternativas.map((alt) => (
                                         <button
                                             key={alt.letra}
                                             onClick={() => handleSelectOption(alt.letra)}
                                             disabled={isAnswered}
-                                            className={`p-3 border-2 rounded-lg transition-all text-left text-md ${getOptionStyle(alt.letra)} ${!isAnswered ? 'cursor-pointer' : 'cursor-default'}`}
+                                            className={`p-2.5 sm:p-3 border-2 rounded-lg transition-all text-left text-sm sm:text-base ${getOptionStyle(alt.letra)} ${!isAnswered ? 'cursor-pointer' : 'cursor-default'}`}
                                         >
                                             <div className="flex items-center gap-2">
                                                 <span
-                                                    className={`font-title w-5 h-5 p-2 rounded-md flex items-center justify-center text-xs ${isAnswered && alt.letra === questao?.resposta
+                                                    className={`w-5 h-5 rounded-md flex items-center justify-center text-xs shrink-0 ${isAnswered && alt.letra === questao?.resposta
                                                         ? 'bg-green-500 text-white'
                                                         : isAnswered && selectedOption === alt.letra && alt.letra !== questao?.resposta
                                                             ? 'bg-red-500 text-white'
@@ -160,7 +156,7 @@ function Home() {
                                     <button
                                         onClick={handleSubmit}
                                         disabled={!selectedOption}
-                                        className={`w-full py-2.5 rounded-lg font-semibold text-md transition-all ${selectedOption
+                                        className={`w-full py-2.5 rounded-lg font-semibold text-sm sm:text-base transition-all ${selectedOption
                                             ? 'bg-blue-600 text-white hover:bg-blue-700'
                                             : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                                             }`}
@@ -182,9 +178,9 @@ function Home() {
                                             ) : (
                                                 <XCircle className="w-4 h-4 text-red-600 shrink-0" />
                                             )}
-                                            <div className="text-sm leading-tight">
+                                            <div className="text-xs sm:text-sm leading-tight">
                                                 <span
-                                                    className={`font-semibold font-title ${isCorrect ? 'text-green-800' : 'text-red-800'}`}
+                                                    className={`font-semibold ${isCorrect ? 'text-green-800' : 'text-red-800'}`}
                                                 >
                                                     {isCorrect ? 'Parabéns!' : 'Incorreta'}
                                                 </span>
@@ -215,7 +211,6 @@ function Home() {
                                     </div>
                                 )}
                             </div>
-
                         </div>
                     </div>
 
@@ -228,7 +223,6 @@ function Home() {
                         interactive={true}
                         className="custom-text-style font-title blue-500" />
                 </div>
-
             </section>
 
             {/* Features Section */}
@@ -363,7 +357,7 @@ function Home() {
 
 
 
-        </div>
+        </>
     );
 };
 

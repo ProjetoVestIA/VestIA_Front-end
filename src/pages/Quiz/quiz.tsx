@@ -138,7 +138,7 @@ function Quiz() {
 
     return (
         <>
-            <header className="sticky top-0 z-40 bg-white border-b">
+            <header className="sticky top-0 z-40">
                 <div className="max-w-6xl mx-auto px-6">
                     <div className="flex gap-2 items-center justify-between font-title py-3">
                         <div className="grow">
