@@ -1,14 +1,15 @@
-import { Brain, CheckCircle2, XCircle, Lightbulb, ChevronRight, Sparkles, BookOpen, Target, Flame } from 'lucide-react';
+import { Brain, CheckCircle2, XCircle, Lightbulb, ChevronRight, Sparkles, BookOpen, Target, Flame, Home, Trophy } from 'lucide-react';
 import { useQuiz } from '@/hooks/useQuiz';
 import { AuthContext } from '@/context/AuthContext';
 import { useContext, useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 function Quiz() {
     const location = useLocation();
     const navigate = useNavigate();
     const filters = location.state?.filters;
     const [hasInitialized, setHasInitialized] = useState(false);
+    const [showFinishModal, setShowFinishModal] = useState(false);
 
     const {
         questao,
@@ -23,6 +24,9 @@ function Quiz() {
         isLoading,
         currentQuestionIndex,
         stats,
+        quizFinished,
+        pontosGanhos,
+        questionsLimit,
         handleSelectOption,
         handleSubmit,
         handleNext,
@@ -42,6 +46,12 @@ function Quiz() {
             navigate('/quizform');
         }
     }, [filters, hasInitialized, carregarQuestoesComFiltros, navigate, usuarioLogado.token]);
+
+    useEffect(() => {
+        if (quizFinished) {
+            setShowFinishModal(true);
+        }
+    }, [quizFinished]);
 
     const getTotalQuestoesDisplay = () => {
         if (!filters?.questionsCount || filters.questionsCount === 'unlimited') {
@@ -118,6 +128,9 @@ function Quiz() {
     const currentQuestionNumber = currentQuestionIndex + 1;
     const progressPercentage = totalQuestoesDisplay > 0 ? (currentQuestionNumber / totalQuestoesDisplay) * 100 : 0;
 
+    const isLastQuestion = questionsLimit !== 'unlimited'
+        ? currentQuestionIndex >= questionsLimit - 1
+        : currentQuestionIndex >= totalQuestoes - 1;
     const getOptionStyle = (letra: string) => {
         if (!isAnswered) {
             return selectedOption === letra
@@ -274,8 +287,17 @@ function Quiz() {
                                     onClick={handleNext}
                                     className="flex-1 py-4 bg-linear-to-r font-title from-blue-600 to-blue-700 text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-blue-500/50 transform hover:scale-105 transition-all flex items-center justify-center gap-2"
                                 >
-                                    Próxima Questão
-                                    <ChevronRight className="w-5 h-5" />
+                                    {isLastQuestion ? (
+                                        <>
+                                            Finalizar Quiz
+                                            <CheckCircle2 className="w-5 h-5" />
+                                        </>
+                                    ) : (
+                                        <>
+                                            Próxima Questão
+                                            <ChevronRight className="w-5 h-5" />
+                                        </>
+                                    )}
                                 </button>
                             )}
                         </div>
@@ -395,6 +417,64 @@ function Quiz() {
                     </div>
                 </div>
             </div>
+
+            {/* Modal de Quiz Finalizado */}
+            {showFinishModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full mx-4">
+                        <div className="text-center space-y-6">
+                            {/* Icon and Title */}
+                            <div className="flex justify-center">
+                                <div className="p-4 bg-linear-to-br from-blue-600 to-blue-700 rounded-full">
+                                    <Trophy className="w-16 h-16 text-white" />
+                                </div>
+                            </div>
+
+                            <div>
+                                <h2 className="text-3xl font-bold text-gray-900 font-title mb-2">
+                                    Quiz Finalizado!
+                                </h2>
+                                <p className="text-gray-600">
+                                    Parabéns por completar todas as questões!
+                                </p>
+                            </div>
+
+                            {/* Stats Summary */}
+                            <div className="bg-linear-to-br from-blue-50 to-blue-100 rounded-2xl p-6 space-y-3">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-700">Questões respondidas:</span>
+                                    <span className="font-bold text-blue-900 text-xl">{stats.questionsAnswered}</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-700">Taxa de acerto:</span>
+                                    <span className="font-bold text-blue-900 text-xl">{Math.round(stats.accuracy)}%</span>
+                                </div>
+                                <div className="flex items-center justify-between">
+                                    <span className="text-gray-700">Pontos ganhos:</span>
+                                    <span className="font-bold text-blue-900 text-xl">{pontosGanhos} pts</span>
+                                </div>
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className="space-y-3">
+                                <Link to='/quizform'
+                                    className="w-full py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white rounded-xl font-semibold text-lg hover:shadow-2xl hover:shadow-blue-500/50 transform hover:scale-105 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Sparkles className="w-5 h-5" />
+                                    Praticar novamente!
+                                </Link>
+
+                                <Link to='/'
+                                    className="w-full py-4 bg-gray-100 text-gray-700 rounded-xl font-semibold text-lg hover:bg-gray-200 transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Home className="w-5 h-5" />
+                                    Voltar à Home
+                                </Link>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </>
     )
 }

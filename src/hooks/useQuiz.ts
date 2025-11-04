@@ -36,6 +36,9 @@ export interface UseQuizReturn {
     isLoading: boolean;
     currentQuestionIndex: number;
     stats: QuizStats;
+    quizFinished: boolean;
+    pontosGanhos: number;
+    questionsLimit: number | 'unlimited';
     handleSelectOption: (letra: string) => void;
     handleSubmit: () => void;
     handleNext: () => void;
@@ -58,6 +61,8 @@ export const useQuiz = (): UseQuizReturn => {
     const [questoesCarregadas, setQuestoesCarregadas] = useState<Questao[]>([]);
     const [filtersLoaded, setFiltersLoaded] = useState<string>('');
     const [questionsLimit, setQuestionsLimit] = useState<number | 'unlimited'>(10);
+    const [quizFinished, setQuizFinished] = useState(false);
+    const [pontosGanhos, setPontosGanhos] = useState(0);
 
     const [stats, setStats] = useState<QuizStats>({
         questionsAnswered: 0,
@@ -129,6 +134,7 @@ export const useQuiz = (): UseQuizReturn => {
         });
 
         if (acertou) {
+            setPontosGanhos(prev => prev + 5);
             atualizarPontosUsuario(5);
         }
     }, [atualizarPontosUsuario]);
@@ -263,12 +269,21 @@ export const useQuiz = (): UseQuizReturn => {
     }, [selectedOption, questao, atualizarEstatisticas]);
 
     const handleNext = useCallback(() => {
+        const isLastQuestion = questionsLimit !== 'unlimited'
+            ? currentQuestionIndex >= questionsLimit - 1
+            : currentQuestionIndex >= totalQuestoes - 1;
+
+        if (isLastQuestion) {
+            setQuizFinished(true);
+            return;
+        }
+
         setSelectedOption(null);
         setIsAnswered(false);
         setShowAIHelp(false);
-        setAIHelpType(null);
+        setAiHelpType(null);
         carregarProximaQuestao();
-    }, [carregarProximaQuestao]);
+    }, [carregarProximaQuestao, currentQuestionIndex, questionsLimit, totalQuestoes]);
 
     const handleAIHelp = async (type: AIHelpType) => {
         if (!questao) {
@@ -300,6 +315,8 @@ export const useQuiz = (): UseQuizReturn => {
         setQuestoesCarregadas([]);
         setFiltersLoaded('');
         setQuestionsLimit(10);
+        setQuizFinished(false);
+        setPontosGanhos(0);
         setStats({
             questionsAnswered: 0,
             correctAnswers: 0,
@@ -322,6 +339,9 @@ export const useQuiz = (): UseQuizReturn => {
         isLoading,
         currentQuestionIndex,
         stats,
+        quizFinished,
+        pontosGanhos,
+        questionsLimit,
         handleSelectOption,
         handleSubmit,
         handleNext,
