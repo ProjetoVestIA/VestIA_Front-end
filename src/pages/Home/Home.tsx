@@ -93,15 +93,15 @@ function Home() {
                             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 text-sm sm:text-base pt-2 font-title">
                                 {!usuario.token ? (
                                     <>
-                                        <button className="group px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
+                                        <Link to='/register' className="group px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
                                             Criar Conta
                                             <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
-                                        </button>
-                                        <button className="px-6 sm:px-8 py-3 sm:py-4 bg-white text-blue-600 font-semibold rounded-xl border-2 border-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105">
+                                        </Link>
+                                        <Link to='/login' className="px-6 sm:px-8 py-3 sm:py-4 bg-white text-blue-600 font-semibold rounded-xl border-2 border-blue-600 hover:bg-blue-50 transition-all flex items-center justify-center gap-2 hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105">
                                             <Zap className="w-4 h-4 sm:w-5 sm:h-5" />
                                             <span className="hidden sm:inline">Entrar e Começar a praticar</span>
                                             <span className="sm:hidden">Entrar</span>
-                                        </button>
+                                        </Link>
                                     </>
                                 ) : (
                                     <button className="group px-6 sm:px-8 py-3 sm:py-4 bg-linear-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-xl hover:shadow-2xl hover:shadow-blue-200 transform hover:scale-105 transition-all flex items-center justify-center gap-2">
