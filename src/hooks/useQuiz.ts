@@ -1,3 +1,4 @@
+import { getAIExplanation, type AIHelpType } from '@/api/openRouter.api';
 import { AuthContext } from '@/context/AuthContext';
 import type Questao from '@/models/questao';
 import { buscar, atualizar } from '@/services/auth.service';
@@ -28,7 +29,9 @@ export interface UseQuizReturn {
     selectedOption: string | null;
     isAnswered: boolean;
     showAIHelp: boolean;
-    aiHelpType: 'concept' | 'error' | null;
+    aiHelpType: AIHelpType | null;
+    aiExplanation: string;
+    isLoadingAI: boolean;
     totalQuestoes: number;
     isLoading: boolean;
     currentQuestionIndex: number;
@@ -46,7 +49,9 @@ export const useQuiz = (): UseQuizReturn => {
     const [selectedOption, setSelectedOption] = useState<string | null>(null);
     const [isAnswered, setIsAnswered] = useState(false);
     const [showAIHelp, setShowAIHelp] = useState(false);
-    const [aiHelpType, setAIHelpType] = useState<'concept' | 'error' | null>(null);
+    const [aiHelpType, setAiHelpType] = useState<AIHelpType | null>(null);
+    const [aiExplanation, setAiExplanation] = useState('');
+    const [isLoadingAI, setIsLoadingAI] = useState(false);
     const [totalQuestoes, setTotalQuestoes] = useState<number>(0);
     const [isLoading, setIsLoading] = useState(false);
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -68,7 +73,7 @@ export const useQuiz = (): UseQuizReturn => {
         try {
             await atualizar(
                 `/usuarios/${usuarioLogado.id}/adicionar-pontos`,
-                pontosParaAdicionar, 
+                pontosParaAdicionar,
                 (data: any) => {
                     const novosPontos = data.pontos || (usuarioLogado.pontos + pontosParaAdicionar);
 
@@ -267,17 +272,36 @@ export const useQuiz = (): UseQuizReturn => {
         carregarProximaQuestao();
     }, [carregarProximaQuestao]);
 
-    const handleAIHelp = useCallback((type: 'concept' | 'error') => {
-        setAIHelpType(type);
+    const handleAIHelp = async (type: AIHelpType) => {
+        if (!questao) {
+            console.error('Nenhuma questão disponível para análise');
+            return;
+        }
+
         setShowAIHelp(true);
-    }, []);
+        setAiHelpType(type);
+        setIsLoadingAI(true);
+        setAiExplanation('');
+
+        try {
+            console.log('Solicitando ajuda da IA...');
+            const explanation = await getAIExplanation(questao, selectedOption, type);
+            console.log('Resposta recebida da IA:', explanation);
+            setAiExplanation(explanation);
+        } catch (error) {
+            console.error('Erro ao obter ajuda da IA:', error);
+            setAiExplanation('Erro ao carregar a explicação. Tente novamente.');
+        } finally {
+            setIsLoadingAI(false);
+        }
+    };
 
     const resetQuiz = useCallback(() => {
         setQuestao(null);
         setSelectedOption(null);
         setIsAnswered(false);
         setShowAIHelp(false);
-        setAIHelpType(null);
+        setAiHelpType(null);
         setCurrentQuestionIndex(0);
         setQuestoesCarregadas([]);
         setFiltersLoaded('');
@@ -298,6 +322,8 @@ export const useQuiz = (): UseQuizReturn => {
         isAnswered,
         showAIHelp,
         aiHelpType,
+        aiExplanation,
+        isLoadingAI,
         totalQuestoes,
         isLoading,
         currentQuestionIndex,

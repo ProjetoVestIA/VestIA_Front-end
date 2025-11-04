@@ -17,6 +17,8 @@ function Quiz() {
         isAnswered,
         showAIHelp,
         aiHelpType,
+        aiExplanation,
+        isLoadingAI,
         totalQuestoes,
         isLoading,
         currentQuestionIndex,
@@ -43,7 +45,7 @@ function Quiz() {
 
     const getTotalQuestoesDisplay = () => {
         if (!filters?.questionsCount || filters.questionsCount === 'unlimited') {
-            return totalQuestoes; 
+            return totalQuestoes;
         }
         return Math.min(filters.questionsCount, totalQuestoes);
     };
@@ -333,16 +335,29 @@ function Quiz() {
                                 <div className="mt-4 p-4 bg-linear-to-br from-gray-50 to-gray-100 rounded-xl border-2 border-gray-200">
                                     <div className="flex items-start gap-3">
                                         <Brain className="w-5 h-5 text-blue-600 shrink-0 mt-1" />
-                                        <div className="space-y-2 text-sm text-gray-700">
-                                            {aiHelpType === 'concept' ? (
-                                                <>
-                                                    <p className="font-semibold text-gray-900">Conceito de Volume de Cilindro:</p>
-                                                    <p>O volume de um cilindro é calculado multiplicando a área da base pela altura. A fórmula é V = π × r² × h, onde r é o raio e h é a altura.</p>
-                                                </>
+                                        <div className="space-y-2 text-sm text-gray-700 flex-1">
+                                            {isLoadingAI ? (
+                                                <div className="flex items-center gap-2">
+                                                    <span>Gerando explicação...</span>
+                                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                                                </div>
                                             ) : (
                                                 <>
-                                                    <p className="font-semibold text-gray-900">Análise do seu erro:</p>
-                                                    <p>Você pode ter esquecido de elevar o raio ao quadrado antes de multiplicar. Lembre-se: primeiro calcule r², depois multiplique por π e pela altura.</p>
+                                                    <p className="font-semibold text-gray-900">
+                                                        {aiHelpType === 'concept' ? '📚 Explicação do Conceito:' : '💡 Análise do seu erro:'}
+                                                    </p>
+                                                    <div className="prose prose-sm max-w-none">
+                                                        {/* Renderiza a explicação corretamente */}
+                                                        {aiExplanation ? (
+                                                            aiExplanation.split('\n').map((paragraph, index) => (
+                                                                <p key={index} className="mb-2 last:mb-0">
+                                                                    {paragraph}
+                                                                </p>
+                                                            ))
+                                                        ) : (
+                                                            <p>Nenhuma explicação disponível.</p>
+                                                        )}
+                                                    </div>
                                                 </>
                                             )}
                                         </div>
