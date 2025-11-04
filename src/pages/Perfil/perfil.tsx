@@ -5,10 +5,11 @@ import { AuthContext } from "@/context/AuthContext";
 import { atualizar } from "@/services/auth.service";
 
 function Perfil() {
-    const { usuario: usuarioLogado } = useContext(AuthContext);
+    const { usuario: usuarioLogado, setUsuario: setUsuarioContext } = useContext(AuthContext);
     const [usuario, setUsuario] = useState<Usuario | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({ nome: '', usuario: '', senha: '' });
+
 
     useEffect(() => {
         if (usuarioLogado.id !== 0) {
@@ -27,11 +28,10 @@ function Perfil() {
         if (!usuario) return;
 
         try {
-            const dadosAtualizados = {
-                ...usuario,
+            const dadosParaEnviar: any = {
+                id: usuario.id,
                 nome: editedData.nome,
                 usuario: editedData.usuario,
-                senha: editedData.senha,
             };
 
             const header = {
@@ -40,11 +40,31 @@ function Perfil() {
                 },
             };
 
-            await atualizar(`/usuarios/atualizar`, dadosAtualizados, setUsuario, header);
+            await atualizar(`/usuarios/atualizar`, dadosParaEnviar, (data: any) => {
+                setUsuario(prev => prev ? {
+                    ...prev,
+                    nome: data.nome || editedData.nome,
+                    usuario: data.usuario || editedData.usuario,
+                    pontos: prev.pontos
+                } : null);
 
-            localStorage.setItem('usuario', JSON.stringify(dadosAtualizados));
+                setUsuarioContext(prev => ({
+                    ...prev,
+                    nome: data.nome || editedData.nome,
+                    usuario: data.usuario || editedData.usuario,
+                    pontos: prev.pontos
+                }));
+
+                const usuarioAtual = JSON.parse(localStorage.getItem('usuario') || '{}');
+                localStorage.setItem('usuario', JSON.stringify({
+                    ...usuarioAtual,
+                    nome: editedData.nome,
+                    usuario: editedData.usuario,
+                }));
+            }, header);
 
             setIsEditing(false);
+            setEditedData(prev => ({ ...prev, senha: '' }));
             alert('Perfil atualizado com sucesso!');
         } catch (error) {
             console.error('Erro ao atualizar perfil:', error);
@@ -77,7 +97,7 @@ function Perfil() {
                     <div className="flex items-center justify-between">
                         <div>
                             <p className="text-blue-100 text-sm mb-1">Total de Pontos</p>
-                            <p className="text-4xl font-semibold font-title">{usuario?.pontos}</p>
+                            <p className="text-4xl font-semibold font-title">{usuarioLogado.pontos}</p>
                         </div>
                         <div className="bg-gray-50/50 rounded-full p-4 flex items-center justify-center">
                             <Award className="w-8 h-8 text-gray-50" />

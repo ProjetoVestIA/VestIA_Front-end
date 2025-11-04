@@ -4,6 +4,7 @@ import { createContext, type ReactNode, useState, useEffect } from "react"
 
 interface AuthContextProps {
     usuario: UsuarioLogin
+    setUsuario: React.Dispatch<React.SetStateAction<UsuarioLogin>>
     handleLogout(): void
     handleLogin(usuario: UsuarioLogin): Promise<void>
     isLoading: boolean
@@ -50,6 +51,12 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
     }, [])
 
+    useEffect(() => {
+        if (usuario.id !== 0 && usuario.token) {
+            localStorage.setItem('usuario', JSON.stringify(usuario))
+            localStorage.setItem('token', usuario.token)
+        }
+    }, [usuario])
 
     async function handleLogin(usuarioLogin: UsuarioLogin) {
         try {
@@ -74,11 +81,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         localStorage.removeItem('usuario')
         localStorage.removeItem('token')
-
     }
 
     return (
-        <AuthContext.Provider value={{ usuario, handleLogin, handleLogout, isLoading }}>
+        <AuthContext.Provider value={{ usuario, setUsuario, handleLogin, handleLogout, isLoading }}>
             {!isLoading ? children : <div>Carregando autenticação...</div>}
         </AuthContext.Provider>
     )

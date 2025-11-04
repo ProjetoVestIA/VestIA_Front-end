@@ -64,15 +64,23 @@ export const useQuiz = (): UseQuizReturn => {
 
     const { usuario: usuarioLogado, setUsuario } = useContext(AuthContext);
 
-    const atualizarPontosUsuario = useCallback(async (novosPontos: number) => {
+    const atualizarPontosUsuario = useCallback(async (pontosParaAdicionar: number) => {
         try {
             await atualizar(
-                '/usuarios/atualizar',
-                { pontos: novosPontos },
+                `/usuarios/${usuarioLogado.id}/adicionar-pontos`,
+                pontosParaAdicionar, 
                 (data: any) => {
+                    const novosPontos = data.pontos || (usuarioLogado.pontos + pontosParaAdicionar);
+
                     setUsuario(prev => ({
                         ...prev,
-                        pontos: data.pontos || novosPontos
+                        pontos: novosPontos
+                    }));
+
+                    const usuarioAtual = JSON.parse(localStorage.getItem('usuario') || '{}');
+                    localStorage.setItem('usuario', JSON.stringify({
+                        ...usuarioAtual,
+                        pontos: novosPontos
                     }));
                 },
                 {
@@ -84,12 +92,20 @@ export const useQuiz = (): UseQuizReturn => {
             );
         } catch (error) {
             console.error('Erro ao atualizar pontos:', error);
+            const novosPontos = usuarioLogado.pontos + pontosParaAdicionar;
+
             setUsuario(prev => ({
                 ...prev,
                 pontos: novosPontos
             }));
+
+            const usuarioAtual = JSON.parse(localStorage.getItem('usuario') || '{}');
+            localStorage.setItem('usuario', JSON.stringify({
+                ...usuarioAtual,
+                pontos: novosPontos
+            }));
         }
-    }, [usuarioLogado.token, setUsuario]);
+    }, [usuarioLogado.id, usuarioLogado.token, usuarioLogado.pontos, setUsuario]);
 
     const atualizarEstatisticas = useCallback((acertou: boolean) => {
         setStats(prev => {
@@ -109,10 +125,9 @@ export const useQuiz = (): UseQuizReturn => {
         });
 
         if (acertou) {
-            const novosPontos = usuarioLogado.pontos + 5;
-            atualizarPontosUsuario(novosPontos);
+            atualizarPontosUsuario(5);
         }
-    }, [usuarioLogado.pontos, atualizarPontosUsuario]);
+    }, [atualizarPontosUsuario]);
 
     const embaralharArray = useCallback(<T>(array: T[]): T[] => {
         const newArray = [...array];
