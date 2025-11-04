@@ -1,3 +1,4 @@
+import { ToastAlert } from "@/components/feedback/ToastAlert"
 import type UsuarioLogin from "@/models/usuarioLogin"
 import { login } from "@/services/auth.service"
 import { createContext, type ReactNode, useState, useEffect } from "react"
@@ -43,7 +44,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
                 setUsuario(usuarioCompleto)
             }
         } catch (error) {
-            console.error('💥 Erro ao recuperar dados:', error)
             localStorage.removeItem('usuario')
             localStorage.removeItem('token')
         } finally {
@@ -69,9 +69,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
             }
 
             await login(`/usuarios/logar`, usuarioLogin, setUsuarioWrapper)
-            alert("O Usuário foi autenticado com sucesso!")
+            ToastAlert("O Usuário foi autenticado com sucesso!", 'sucesso')
         } catch (error) {
-            alert("Os Dados do usuário estão inconsistentes!")
+            ToastAlert("Os Dados do usuário estão inconsistentes!", 'erro')
             throw error
         }
     }

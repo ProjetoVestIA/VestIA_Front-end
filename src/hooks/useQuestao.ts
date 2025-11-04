@@ -1,3 +1,4 @@
+import { ToastAlert } from '@/components/feedback/ToastAlert';
 import { AuthContext } from '@/context/AuthContext';
 import type Questao from '@/models/questao';
 import { buscar } from '@/services/auth.service';
@@ -53,7 +54,6 @@ export const useQuestao = (maxCaracteres?: number): UseQuestaoReturn => {
                     headers: { Authorization: usuarioLogado.token }
                 });
             } catch (error) {
-                console.error('Erro ao carregar total de questões:', error);
                 setTotalQuestoes(10);
             }
         };
@@ -82,7 +82,7 @@ export const useQuestao = (maxCaracteres?: number): UseQuestaoReturn => {
                 headers: { Authorization: usuarioLogado.token }
             });
         } catch (error) {
-            console.error('Erro ao carregar questão:', error);
+            ToastAlert('Erro ao carregar questão', 'erro')
         } finally {
             setIsLoading(false);
         }

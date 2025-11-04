@@ -2,6 +2,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { Brain, CircleUserRound, LogOut } from "lucide-react";
 import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastAlert } from "../feedback/ToastAlert";
 
 function Navbar() {
     const navigate = useNavigate();
@@ -9,7 +10,7 @@ function Navbar() {
 
     function logout() {
         handleLogout();
-        alert('O usuário foi desconectado com sucesso!');
+        ToastAlert('O usuário foi desconectado.', 'info');
         navigate('/');
     }
 

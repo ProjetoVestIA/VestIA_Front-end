@@ -8,12 +8,15 @@ import { AuthProvider } from "./context/AuthContext"
 import Perfil from "./pages/Perfil/perfil"
 import Quiz from "./pages/Quiz/quiz"
 import QuizForm from "./pages/QuizForm/quizForm"
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from "react-toastify"
 
 function App() {
   return (
 
     <>
       <AuthProvider>
+        <ToastContainer />
         <BrowserRouter>
           <div className="flex flex-col min-h-screen bg-linear-to-br from-blue-50 via-white to-blue-50">
             <Navbar />

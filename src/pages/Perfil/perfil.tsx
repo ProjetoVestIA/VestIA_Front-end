@@ -3,6 +3,7 @@ import { User, Award, Mail, Save, X, Edit2, LockKeyhole } from "lucide-react";
 import { useState, useContext, useEffect } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { atualizar } from "@/services/auth.service";
+import { ToastAlert } from "@/components/feedback/ToastAlert";
 
 function Perfil() {
     const { usuario: usuarioLogado, setUsuario } = useContext(AuthContext);
@@ -67,10 +68,9 @@ function Perfil() {
 
             setIsEditing(false);
             setEditedData(prev => ({ ...prev, senha: '' }));
-            alert('Perfil atualizado com sucesso!');
+            ToastAlert('Perfil atualizado com sucesso!', 'sucesso');
         } catch (error) {
-            console.error('Erro ao atualizar perfil:', error);
-            alert('Erro ao atualizar perfil!');
+            ToastAlert('Erro ao atualizar perfil!', 'erro');
         }
     };
 

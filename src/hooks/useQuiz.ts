@@ -96,7 +96,6 @@ export const useQuiz = (): UseQuizReturn => {
                 }
             );
         } catch (error) {
-            console.error('Erro ao atualizar pontos:', error);
             const novosPontos = usuarioLogado.pontos + pontosParaAdicionar;
 
             setUsuario(prev => ({
@@ -217,7 +216,6 @@ export const useQuiz = (): UseQuizReturn => {
                 headers: { Authorization: usuarioLogado.token }
             });
         } catch (error) {
-            console.error('Erro ao carregar questões com filtros:', error);
             setQuestoesCarregadas([]);
             setTotalQuestoes(0);
             setQuestao(null);
@@ -274,7 +272,6 @@ export const useQuiz = (): UseQuizReturn => {
 
     const handleAIHelp = async (type: AIHelpType) => {
         if (!questao) {
-            console.error('Nenhuma questão disponível para análise');
             return;
         }
 
@@ -284,12 +281,9 @@ export const useQuiz = (): UseQuizReturn => {
         setAiExplanation('');
 
         try {
-            console.log('Solicitando ajuda da IA...');
             const explanation = await getAIExplanation(questao, selectedOption, type);
-            console.log('Resposta recebida da IA:', explanation);
             setAiExplanation(explanation);
         } catch (error) {
-            console.error('Erro ao obter ajuda da IA:', error);
             setAiExplanation('Erro ao carregar a explicação. Tente novamente.');
         } finally {
             setIsLoadingAI(false);

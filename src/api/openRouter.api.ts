@@ -70,15 +70,12 @@ Seja direto e construtivo. Explique o erro em 3-4 frases completas.`;
         let response = choice.message?.content || '';
 
         if (isResponseCutOff(response)) {
-            console.warn('Resposta cortada detectada:', response);
             return await getCompleteExplanation(question, selectedOption, helpType);
         }
 
-        console.log('Resposta completa:', response);
         return response;
 
     } catch (error) {
-        console.error('Erro ao buscar explicação da IA:', error);
         return 'Erro ao carregar a explicação. Tente novamente.';
     }
 }

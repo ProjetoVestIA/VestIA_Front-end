@@ -3,6 +3,7 @@ import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import type Usuario from '@/models/usuario';
 import { postUsuario } from '@/services/auth.service';
+import { ToastAlert } from '@/components/feedback/ToastAlert';
 
 type FormErrors = Partial<Record<keyof Usuario | 'confirmSenha', string>>;
 
@@ -85,9 +86,9 @@ function Register() {
         if (Object.keys(newErrors).length === 0) {
             try {
                 await postUsuario('/usuarios/cadastrar', usuario, setUsuario);
-                alert('Usuário cadastrado com sucesso!');
+                ToastAlert('Usuário cadastrado com sucesso!', 'sucesso');
             } catch {
-                alert('Erro ao cadastrar o usuário!');
+                ToastAlert('Erro ao cadastrar o usuário!', 'erro');
             }
         } else {
             setErrors(newErrors);
