@@ -5,33 +5,41 @@ import { AuthContext } from "@/context/AuthContext";
 import { atualizar } from "@/services/auth.service";
 
 function Perfil() {
-    const { usuario: usuarioLogado, setUsuario: setUsuarioContext } = useContext(AuthContext);
-    const [usuario, setUsuario] = useState<Usuario | null>(null);
+    const { usuario: usuarioLogado, setUsuario } = useContext(AuthContext);
+    const [usuarioLocal, setUsuarioLocal] = useState<Usuario | null>(null);
     const [isEditing, setIsEditing] = useState(false);
     const [editedData, setEditedData] = useState({ nome: '', usuario: '', senha: '' });
 
-
     useEffect(() => {
         if (usuarioLogado.id !== 0) {
-            setUsuario(usuarioLogado);
-            setEditedData({ nome: usuarioLogado.nome, usuario: usuarioLogado.usuario, senha: usuarioLogado.senha });
+            setUsuarioLocal(usuarioLogado);
+            setEditedData({
+                nome: usuarioLogado.nome,
+                usuario: usuarioLogado.usuario,
+                senha: ''
+            });
         }
     }, [usuarioLogado]);
 
     const handleEditClick = () => {
-        if (!usuario) return;
-        setEditedData({ nome: usuario.nome, usuario: usuario.usuario, senha: usuarioLogado.senha });
+        if (!usuarioLocal) return;
+        setEditedData({
+            nome: usuarioLocal.nome,
+            usuario: usuarioLocal.usuario,
+            senha: ''
+        });
         setIsEditing(true);
     };
 
     const handleSave = async () => {
-        if (!usuario) return;
+        if (!usuarioLocal) return;
 
         try {
-            const dadosParaEnviar: any = {
-                id: usuario.id,
+            const dadosParaEnviar = {
+                id: usuarioLocal.id,
                 nome: editedData.nome,
                 usuario: editedData.usuario,
+                senha: editedData.senha.trim() !== '' ? editedData.senha : usuarioLogado.senha
             };
 
             const header = {
@@ -41,25 +49,19 @@ function Perfil() {
             };
 
             await atualizar(`/usuarios/atualizar`, dadosParaEnviar, (data: any) => {
-                setUsuario(prev => prev ? {
+                setUsuarioLocal(prev => prev ? {
                     ...prev,
                     nome: data.nome || editedData.nome,
                     usuario: data.usuario || editedData.usuario,
+                    senha: dadosParaEnviar.senha,
                     pontos: prev.pontos
                 } : null);
 
-                setUsuarioContext(prev => ({
+                setUsuario(prev => ({
                     ...prev,
                     nome: data.nome || editedData.nome,
                     usuario: data.usuario || editedData.usuario,
-                    pontos: prev.pontos
-                }));
-
-                const usuarioAtual = JSON.parse(localStorage.getItem('usuario') || '{}');
-                localStorage.setItem('usuario', JSON.stringify({
-                    ...usuarioAtual,
-                    nome: editedData.nome,
-                    usuario: editedData.usuario,
+                    senha: dadosParaEnviar.senha,
                 }));
             }, header);
 
@@ -74,7 +76,13 @@ function Perfil() {
 
     const handleCancel = () => {
         setIsEditing(false);
-        if (usuario) setEditedData({ nome: usuario.nome, usuario: usuario.usuario, senha: usuarioLogado.senha });
+        if (usuarioLocal) {
+            setEditedData({
+                nome: usuarioLocal.nome,
+                usuario: usuarioLocal.usuario,
+                senha: ''
+            });
+        }
     };
 
     return (
@@ -127,7 +135,7 @@ function Perfil() {
                         ) : (
                             <div className="flex items-center text-gray-900">
                                 <User className="h-5 w-5 text-gray-400 mr-3" />
-                                <span className="text-lg">{usuario?.nome}</span>
+                                <span className="text-lg">{usuarioLocal?.nome}</span>
                             </div>
                         )}
                     </div>
@@ -152,7 +160,7 @@ function Perfil() {
                         ) : (
                             <div className="flex items-center text-gray-900">
                                 <Mail className="h-5 w-5 text-gray-400 mr-3" />
-                                <span className="text-lg">{usuario?.usuario}</span>
+                                <span className="text-lg">{usuarioLocal?.usuario}</span>
                             </div>
                         )}
                     </div>
@@ -169,7 +177,7 @@ function Perfil() {
                                 </div>
                                 <input
                                     type="password"
-                                    placeholder="Digite uma nova senha"
+                                    placeholder="Deixe em branco para manter a atual"
                                     value={editedData.senha}
                                     onChange={(e) => setEditedData({ ...editedData, senha: e.target.value })}
                                     className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
