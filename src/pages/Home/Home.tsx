@@ -42,7 +42,7 @@ function Home() {
         {
             icon: Trophy,
             title: 'Gamificação',
-            description: 'Sistema de pontos, ranking e conquistas para manter você motivado'
+            description: 'Sistema de pontos para manter você motivado'
         }
     ];
 
