@@ -100,6 +100,7 @@ A autenticação é feita via **JWT**, armazenado no `localStorage` e injetado a
 * [Node.js 20+](https://nodejs.org/)
 * [npm](https://www.npmjs.com/) ou [yarn](https://yarnpkg.com/)
 * Backend em execução (ex.: [`http://localhost:8080`](http://localhost:8080))
+* API-key da plataforma [Openrouter](https://openrouter.ai/)
 
 ### ⚙️ Passo a passo
 
@@ -169,3 +170,4 @@ Esses serviços garantem velocidade, confiabilidade e escalabilidade para a inte
 
 > 💡 **Dica:** O front-end foi desenvolvido priorizando acessibilidade, velocidade e compatibilidade entre navegadores modernos.
 > Recursos como feedback visual instantâneo, responsividade e integração com IA tornam o VestIA uma experiência fluida tanto para desktop quanto dispositivos móveis.
+
